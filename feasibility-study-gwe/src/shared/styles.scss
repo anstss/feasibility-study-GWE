@@ -1,5 +1,9 @@
 @import "variables";
 
-.bg-primary {
-  background-color: $primary-color !important;
+//.bg-primary {
+//  background-color: $primary-color !important;
+//}
+
+.container {
+  max-width: 1600px;
 }

@@ -8,7 +8,7 @@ const initialState: feasibilityStudyState = {
   annualWaterWithdrawalData: [],
 };
 
-const feasibilityStudySlice = createSlice({
+export const feasibilityStudySlice = createSlice({
   name: "feasibilityStudy",
   initialState,
   reducers: {

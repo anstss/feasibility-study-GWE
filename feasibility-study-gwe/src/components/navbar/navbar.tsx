@@ -3,8 +3,8 @@ import "./navbar.scss";
 
 const Navbar = () => {
   return (
-    <nav className="navbar navbar-light bg-primary fixed-top">
-      <div className="container-fluid">
+    <nav className="navbar navbar-light bg-primary">
+      <div className="container-fluid container">
         <a className="navbar-brand text-white" href="#">
           ТЕО
         </a>
