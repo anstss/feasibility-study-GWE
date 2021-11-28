@@ -15,7 +15,6 @@ import {
 import IStatistic from "../../../Types/IStatistic";
 import { LOCAL_STORAGE_KEY } from "../../../shared/constants";
 import { useStore } from "react-redux";
-import { AppStore } from "../../../store/store";
 
 type ChartDataElement = {
   year: number;
@@ -25,8 +24,13 @@ type ChartDataElement = {
 const AnalysisPage = () => {
   const [waterExtractionsData, setWaterExtractionsData] = useState<string>("");
   const [limitProdVolumes, setLimitProdVolumes] = useState<string>("");
-  const { annualWaterWithdrawalData, statistic, limitedProductionVolumes } =
-    useAppSelector((state) => state.feasibilityStudyReducer);
+  const [lossVolume, setLossVolume] = useState<string>("");
+  const {
+    annualWaterWithdrawalData,
+    statistic,
+    limitedProductionVolumes,
+    waterLossVolume,
+  } = useAppSelector((state) => state.feasibilityStudyReducer);
   const {
     totalForPreviousYears,
     averageForPreviousYears,
@@ -35,12 +39,14 @@ const AnalysisPage = () => {
     maxForLastTenOrLessYears,
     maxForLastTenOrLessYearsPercent,
     averageForLastTenOrLessYearsPercent,
+    waterLossVolumePercent,
   } = statistic;
   const {
     setAnnualWaterWithdrawalData,
     setStatistic,
     clearData,
     setLimitedProductionVolumes,
+    setWaterLossVolume,
   } = feasibilityStudySlice.actions;
   const dispatch = useAppDispatch();
   const [chartData, setChartData] = useState<ChartDataElement[]>([]);
@@ -51,6 +57,9 @@ const AnalysisPage = () => {
     }
     if (limitedProductionVolumes) {
       setLimitProdVolumes(limitedProductionVolumes.toString());
+    }
+    if (waterLossVolume) {
+      setLossVolume(waterLossVolume.toString());
     }
   }, [annualWaterWithdrawalData, limitedProductionVolumes]);
 
@@ -68,8 +77,10 @@ const AnalysisPage = () => {
       .map((el) => +el);
     dispatch(setAnnualWaterWithdrawalData(data));
     if (!isNaN(+limitProdVolumes)) {
-      console.log(+limitProdVolumes);
       dispatch(setLimitedProductionVolumes(+limitProdVolumes));
+    }
+    if (!isNaN(+lossVolume)) {
+      dispatch(setWaterLossVolume(+lossVolume));
     }
   };
 
@@ -115,6 +126,7 @@ const AnalysisPage = () => {
       annualWaterWithdrawalData.slice(-10).length;
     let maxForLastTenOrLessYearsPercent = 0;
     let averageForLastTenOrLessYearsPercent = 0;
+    let waterLossVolumePercent = 0;
     if (limitedProductionVolumes) {
       maxForLastTenOrLessYearsPercent = +(
         (maxForLastTenOrLessYears / limitedProductionVolumes) *
@@ -124,6 +136,12 @@ const AnalysisPage = () => {
         (averageForLastTenOrLessYears / limitedProductionVolumes) *
         100
       ).toFixed(2);
+      if (waterLossVolume) {
+        waterLossVolumePercent = +(
+          (waterLossVolume / limitedProductionVolumes) *
+          100
+        ).toFixed(2);
+      }
     }
     const statistic: IStatistic = {
       totalForPreviousYears,
@@ -133,6 +151,7 @@ const AnalysisPage = () => {
       maxForLastTenOrLessYears,
       maxForLastTenOrLessYearsPercent,
       averageForLastTenOrLessYearsPercent,
+      waterLossVolumePercent,
     };
     dispatch(setStatistic(statistic));
     saveDataAndStatisticToLocalStorage();
@@ -161,6 +180,12 @@ const AnalysisPage = () => {
     setLimitProdVolumes(event.target.value);
   };
 
+  const handleChangeLossVolume = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setLossVolume(event.target.value);
+  };
+
   return (
     <div>
       <h2 className="fs-4 my-5">Аналіз досягнутих обсягів видобутку води</h2>
@@ -185,6 +210,17 @@ const AnalysisPage = () => {
         className="form-control mb-2"
         value={limitProdVolumes}
         onChange={handleChangeLimitProdVolumes}
+      />
+      <div className="input-group-prepend input-text mb-2">
+        Введіть обсяг втрат в системах водопостачання (у тис.м³/рік), згідно із
+        дозволом на спеціальне водокористування, всі нечислові значення будуть
+        проігноровані:
+      </div>
+      <input
+        type="text"
+        className="form-control mb-2"
+        value={lossVolume}
+        onChange={handleChangeLossVolume}
       />
       <div className="d-flex flex-wrap justify-content-end mb-3">
         <button
@@ -332,6 +368,18 @@ const AnalysisPage = () => {
                         </td>
                       </tr>
                     </React.Fragment>
+                  ) : null}
+                  {waterLossVolume && limitedProductionVolumes ? (
+                    <tr>
+                      <td className="col-6">
+                        <p className="card-text">
+                          Обсяг втрат в системах у відсотковому відношенні до
+                          загального обсягу забору води (
+                          {limitedProductionVolumes} тис.м³):
+                        </p>
+                      </td>
+                      <td className="col-6">{waterLossVolumePercent}%</td>
+                    </tr>
                   ) : null}
                 </tbody>
               </table>

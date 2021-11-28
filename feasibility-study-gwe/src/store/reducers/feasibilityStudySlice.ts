@@ -5,6 +5,7 @@ interface feasibilityStudyState {
   annualWaterWithdrawalData: number[];
   statistic: IStatistic;
   limitedProductionVolumes: number;
+  waterLossVolume: number;
 }
 
 const initialState: feasibilityStudyState = {
@@ -17,8 +18,10 @@ const initialState: feasibilityStudyState = {
     maxForLastTenOrLessYears: 0,
     maxForLastTenOrLessYearsPercent: 0,
     averageForLastTenOrLessYearsPercent: 0,
+    waterLossVolumePercent: 0,
   },
   limitedProductionVolumes: 0,
+  waterLossVolume: 0,
 };
 
 export const feasibilityStudySlice = createSlice({
@@ -48,6 +51,9 @@ export const feasibilityStudySlice = createSlice({
     },
     setLimitedProductionVolumes(state, action: PayloadAction<number>) {
       state.limitedProductionVolumes = action.payload;
+    },
+    setWaterLossVolume(state, action: PayloadAction<number>) {
+      state.waterLossVolume = action.payload;
     },
   },
 });
