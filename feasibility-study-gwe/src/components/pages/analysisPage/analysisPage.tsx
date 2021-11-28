@@ -33,7 +33,7 @@ const AnalysisPage = () => {
     totalForLastTenYears,
     averageForLastTenYears,
   } = statistic;
-  const { setAnnualWaterWithdrawalData, setStatistic } =
+  const { setAnnualWaterWithdrawalData, setStatistic, clearData } =
     feasibilityStudySlice.actions;
   const dispatch = useAppDispatch();
   const [chartData, setChartData] = useState<ChartDataElement[]>([]);
@@ -102,6 +102,16 @@ const AnalysisPage = () => {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(data));
   };
 
+  const handleDeleteData = () => {
+    localStorage.removeItem(LOCAL_STORAGE_KEY);
+    dispatch(clearData());
+    setWaterExtractionsData("");
+  };
+
+  const handleCancel = () => {
+    setWaterExtractionsData("");
+  };
+
   return (
     <div>
       <h2 className="fs-4 my-5">Аналіз досягнутих обсягів видобутку води</h2>
@@ -119,7 +129,23 @@ const AnalysisPage = () => {
         />
         <button
           type="button"
-          className="btn btn-primary"
+          className="btn btn-light mb-2"
+          onClick={handleCancel}
+          disabled={!waterExtractionsData}
+        >
+          Скасувати
+        </button>
+        <button
+          type="button"
+          className="btn btn-danger ms-2 mb-2"
+          onClick={handleDeleteData}
+          disabled={!annualWaterWithdrawalData.length}
+        >
+          Видалити дані
+        </button>
+        <button
+          type="button"
+          className="btn btn-primary ms-2 mb-2"
           onClick={handleAnalyses}
         >
           Виконати аналіз

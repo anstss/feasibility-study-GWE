@@ -34,6 +34,11 @@ export const feasibilityStudySlice = createSlice({
       state.annualWaterWithdrawalData = annualWaterWithdrawalData;
       state.statistic = statistic;
     },
+    clearData(state) {
+      const { annualWaterWithdrawalData, statistic } = initialState;
+      state.annualWaterWithdrawalData = annualWaterWithdrawalData;
+      state.statistic = statistic;
+    },
   },
 });
 
