@@ -26,6 +26,14 @@ export const feasibilityStudySlice = createSlice({
     setStatistic(state, action: PayloadAction<IStatistic>) {
       state.statistic = action.payload;
     },
+    setDataFromLocalStorage(
+      state,
+      action: PayloadAction<feasibilityStudyState>
+    ) {
+      const { annualWaterWithdrawalData, statistic } = action.payload;
+      state.annualWaterWithdrawalData = annualWaterWithdrawalData;
+      state.statistic = statistic;
+    },
   },
 });
 

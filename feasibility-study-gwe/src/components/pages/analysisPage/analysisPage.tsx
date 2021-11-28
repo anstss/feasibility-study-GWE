@@ -13,6 +13,9 @@ import {
   YAxis,
 } from "recharts";
 import IStatistic from "../../../Types/IStatistic";
+import { LOCAL_STORAGE_KEY } from "../../../shared/constants";
+import { useStore } from "react-redux";
+import { AppStore } from "../../../store/store";
 
 type ChartDataElement = {
   year: number;
@@ -89,6 +92,14 @@ const AnalysisPage = () => {
       averageForLastTenYears,
     };
     dispatch(setStatistic(statistic));
+    saveDataAndStatisticToLocalStorage();
+  };
+
+  const store = useStore();
+
+  const saveDataAndStatisticToLocalStorage = () => {
+    const data = store.getState().feasibilityStudyReducer;
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(data));
   };
 
   return (
