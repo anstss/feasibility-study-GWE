@@ -12,6 +12,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import IStatistic from "../../../Types/IStatistic";
 
 type ChartDataElement = {
   year: number;
@@ -20,10 +21,17 @@ type ChartDataElement = {
 
 const AnalysisPage = () => {
   const [waterExtractionsData, setWaterExtractionsData] = useState<string>("");
-  const { annualWaterWithdrawalData } = useAppSelector(
+  const { annualWaterWithdrawalData, statistic } = useAppSelector(
     (state) => state.feasibilityStudyReducer
   );
-  const { setAnnualWaterWithdrawalData } = feasibilityStudySlice.actions;
+  const {
+    totalForPreviousYears,
+    averageForPreviousYears,
+    totalForLastTenYears,
+    averageForLastTenYears,
+  } = statistic;
+  const { setAnnualWaterWithdrawalData, setStatistic } =
+    feasibilityStudySlice.actions;
   const dispatch = useAppDispatch();
   const [chartData, setChartData] = useState<ChartDataElement[]>([]);
 
@@ -48,27 +56,39 @@ const AnalysisPage = () => {
       (el, index) => {
         return {
           year: currentYear - annualWaterWithdrawalData.length + index,
-          waterProductionVolume: el,
+          waterProductionVolume: +el.toFixed(2),
         };
       }
     );
     setChartData(transformedData);
+    if (annualWaterWithdrawalData.length > 0) {
+      calculateStatistic();
+    }
   }, [annualWaterWithdrawalData]);
 
   const calculateStatistic = () => {
-    const totalForPreviousYears = annualWaterWithdrawalData.reduce(
-      (prev, current) => prev + current
-    );
-    const averageForPreviousYears =
-      totalForPreviousYears / annualWaterWithdrawalData.length;
+    const totalForPreviousYears = +annualWaterWithdrawalData
+      .reduce((prev, current) => prev + current)
+      .toFixed(2);
+    const averageForPreviousYears = +(
+      totalForPreviousYears / annualWaterWithdrawalData.length
+    ).toFixed(2);
     let totalForLastTenYears = 0;
     let averageForLastTenYears = 0;
     if (annualWaterWithdrawalData.length > 10) {
-      totalForLastTenYears = annualWaterWithdrawalData
+      totalForLastTenYears = +annualWaterWithdrawalData
         .slice(-10)
-        .reduce((prev, current) => prev + current);
-      averageForLastTenYears = totalForLastTenYears / 10;
+        .reduce((prev, current) => prev + current)
+        .toFixed(2);
+      averageForLastTenYears = +(totalForLastTenYears / 10).toFixed(2);
     }
+    const statistic: IStatistic = {
+      totalForPreviousYears,
+      averageForPreviousYears,
+      totalForLastTenYears,
+      averageForLastTenYears,
+    };
+    dispatch(setStatistic(statistic));
   };
 
   return (
@@ -114,24 +134,61 @@ const AnalysisPage = () => {
               />
             </BarChart>
           </ResponsiveContainer>
+          <div className="card my-3">
+            <div className="card-body">
+              <h5 className="card-title">Статистика</h5>
+              <table className="table table-striped table-hover">
+                <tbody>
+                  <tr>
+                    <td className="col-6">
+                      <p className="card-text">
+                        Всього за попередні {annualWaterWithdrawalData.length}
+                        {annualWaterWithdrawalData.length >= 5
+                          ? " років"
+                          : " роки"}
+                        :
+                      </p>
+                    </td>
+                    <td className="col-6">{totalForPreviousYears}</td>
+                  </tr>
+                  <tr>
+                    <td className="col-6">
+                      <p className="card-text">
+                        В середньому за {annualWaterWithdrawalData.length}
+                        {annualWaterWithdrawalData.length >= 5
+                          ? " років"
+                          : " роки"}
+                        :
+                      </p>
+                    </td>
+                    <td className="col-6">{averageForPreviousYears}</td>
+                  </tr>
+                  {annualWaterWithdrawalData.length > 10 ? (
+                    <React.Fragment>
+                      <tr>
+                        <td className="col-6">
+                          <p className="card-text">
+                            Всього за попередні 10 років:
+                          </p>
+                        </td>
+                        <td className="col-6">{totalForLastTenYears}</td>
+                      </tr>
+                      <tr>
+                        <td className="col-6">
+                          <p className="card-text">
+                            В середньому за попередні 10 років:
+                          </p>
+                        </td>
+                        <td className="col-6">{averageForLastTenYears}</td>
+                      </tr>
+                    </React.Fragment>
+                  ) : null}
+                </tbody>
+              </table>
+            </div>
+          </div>
         </React.Fragment>
       ) : null}
-      <div className="card">
-        <div className="card-body">
-          <h5 className="card-title">Статистика</h5>
-          <h6 className="card-subtitle mb-2 text-muted">Card subtitle</h6>
-          <p className="card-text">
-            Всього за попередні {annualWaterWithdrawalData.length}{" "}
-            {annualWaterWithdrawalData.length >= 5 ? "років" : "роки"}: {}
-          </p>
-          <a href="#" className="card-link">
-            Card link
-          </a>
-          <a href="#" className="card-link">
-            Another link
-          </a>
-        </div>
-      </div>
     </div>
   );
 };
