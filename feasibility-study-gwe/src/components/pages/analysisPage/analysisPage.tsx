@@ -24,19 +24,35 @@ type ChartDataElement = {
 
 const AnalysisPage = () => {
   const [waterExtractionsData, setWaterExtractionsData] = useState<string>("");
-  const { annualWaterWithdrawalData, statistic } = useAppSelector(
-    (state) => state.feasibilityStudyReducer
-  );
+  const [limitProdVolumes, setLimitProdVolumes] = useState<string>("");
+  const { annualWaterWithdrawalData, statistic, limitedProductionVolumes } =
+    useAppSelector((state) => state.feasibilityStudyReducer);
   const {
     totalForPreviousYears,
     averageForPreviousYears,
     totalForLastTenYears,
     averageForLastTenYears,
+    maxForLastTenOrLessYears,
+    maxForLastTenOrLessYearsPercent,
+    averageForLastTenOrLessYearsPercent,
   } = statistic;
-  const { setAnnualWaterWithdrawalData, setStatistic, clearData } =
-    feasibilityStudySlice.actions;
+  const {
+    setAnnualWaterWithdrawalData,
+    setStatistic,
+    clearData,
+    setLimitedProductionVolumes,
+  } = feasibilityStudySlice.actions;
   const dispatch = useAppDispatch();
   const [chartData, setChartData] = useState<ChartDataElement[]>([]);
+
+  useEffect(() => {
+    if (annualWaterWithdrawalData) {
+      setWaterExtractionsData(annualWaterWithdrawalData.join(" "));
+    }
+    if (limitedProductionVolumes) {
+      setLimitProdVolumes(limitedProductionVolumes.toString());
+    }
+  }, [annualWaterWithdrawalData, limitedProductionVolumes]);
 
   const handleChangeWaterExtractionsData = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -51,6 +67,10 @@ const AnalysisPage = () => {
       .filter((el) => !isNaN(+el))
       .map((el) => +el);
     dispatch(setAnnualWaterWithdrawalData(data));
+    if (!isNaN(+limitProdVolumes)) {
+      console.log(+limitProdVolumes);
+      dispatch(setLimitedProductionVolumes(+limitProdVolumes));
+    }
   };
 
   useEffect(() => {
@@ -85,11 +105,34 @@ const AnalysisPage = () => {
         .toFixed(2);
       averageForLastTenYears = +(totalForLastTenYears / 10).toFixed(2);
     }
+    const maxForLastTenOrLessYears = Math.max(
+      ...annualWaterWithdrawalData.slice(-10)
+    );
+    const averageForLastTenOrLessYears =
+      annualWaterWithdrawalData
+        .slice(-10)
+        .reduce((prev, current) => prev + current) /
+      annualWaterWithdrawalData.slice(-10).length;
+    let maxForLastTenOrLessYearsPercent = 0;
+    let averageForLastTenOrLessYearsPercent = 0;
+    if (limitedProductionVolumes) {
+      maxForLastTenOrLessYearsPercent = +(
+        (maxForLastTenOrLessYears / limitedProductionVolumes) *
+        100
+      ).toFixed(2);
+      averageForLastTenOrLessYearsPercent = +(
+        (averageForLastTenOrLessYears / limitedProductionVolumes) *
+        100
+      ).toFixed(2);
+    }
     const statistic: IStatistic = {
       totalForPreviousYears,
       averageForPreviousYears,
       totalForLastTenYears,
       averageForLastTenYears,
+      maxForLastTenOrLessYears,
+      maxForLastTenOrLessYearsPercent,
+      averageForLastTenOrLessYearsPercent,
     };
     dispatch(setStatistic(statistic));
     saveDataAndStatisticToLocalStorage();
@@ -112,6 +155,12 @@ const AnalysisPage = () => {
     setWaterExtractionsData("");
   };
 
+  const handleChangeLimitProdVolumes = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setLimitProdVolumes(event.target.value);
+  };
+
   return (
     <div>
       <h2 className="fs-4 my-5">Аналіз досягнутих обсягів видобутку води</h2>
@@ -120,13 +169,24 @@ const AnalysisPage = () => {
         останніх років (розділяючи пробілом), всі нечислові значення будуть
         проігноровані:
       </div>
+      <input
+        type="text"
+        className="form-control mb-2"
+        value={waterExtractionsData}
+        onChange={handleChangeWaterExtractionsData}
+      />
+      <div className="input-group-prepend input-text mb-2">
+        Введіть лімітовані обсяги видобутку (у тис.м³/рік), зазначені в дозволі
+        на спеціальне водокористування, всі нечислові значення будуть
+        проігноровані:
+      </div>
+      <input
+        type="text"
+        className="form-control mb-2"
+        value={limitProdVolumes}
+        onChange={handleChangeLimitProdVolumes}
+      />
       <div className="d-flex flex-wrap justify-content-end mb-3">
-        <input
-          type="text"
-          className="form-control mb-2"
-          value={waterExtractionsData}
-          onChange={handleChangeWaterExtractionsData}
-        />
         <button
           type="button"
           className="btn btn-light mb-2"
@@ -148,6 +208,7 @@ const AnalysisPage = () => {
           type="button"
           className="btn btn-primary ms-2 mb-2"
           onClick={handleAnalyses}
+          disabled={!waterExtractionsData}
         >
           Виконати аналіз
         </button>
@@ -187,7 +248,7 @@ const AnalysisPage = () => {
                         :
                       </p>
                     </td>
-                    <td className="col-6">{totalForPreviousYears}</td>
+                    <td className="col-6">{totalForPreviousYears} тис.м³</td>
                   </tr>
                   <tr>
                     <td className="col-6">
@@ -199,7 +260,7 @@ const AnalysisPage = () => {
                         :
                       </p>
                     </td>
-                    <td className="col-6">{averageForPreviousYears}</td>
+                    <td className="col-6">{averageForPreviousYears} тис.м³</td>
                   </tr>
                   {annualWaterWithdrawalData.length > 10 ? (
                     <React.Fragment>
@@ -209,7 +270,7 @@ const AnalysisPage = () => {
                             Всього за попередні 10 років:
                           </p>
                         </td>
-                        <td className="col-6">{totalForLastTenYears}</td>
+                        <td className="col-6">{totalForLastTenYears} тис.м³</td>
                       </tr>
                       <tr>
                         <td className="col-6">
@@ -217,7 +278,58 @@ const AnalysisPage = () => {
                             В середньому за попередні 10 років:
                           </p>
                         </td>
-                        <td className="col-6">{averageForLastTenYears}</td>
+                        <td className="col-6">
+                          {averageForLastTenYears} тис.м³
+                        </td>
+                      </tr>
+                    </React.Fragment>
+                  ) : null}
+                  <tr>
+                    <td className="col-6">
+                      <p className="card-text">
+                        Максимальний обсяг видобутку за останні{" "}
+                        {annualWaterWithdrawalData.slice(-10).length}
+                        {annualWaterWithdrawalData.length >= 5
+                          ? " років"
+                          : " роки"}
+                        :
+                      </p>
+                    </td>
+                    <td className="col-6">{maxForLastTenOrLessYears} тис.м³</td>
+                  </tr>
+                  {limitedProductionVolumes ? (
+                    <React.Fragment>
+                      <tr>
+                        <td className="col-6">
+                          <p className="card-text">
+                            Максимальний обсяг видобутку за останні{" "}
+                            {annualWaterWithdrawalData.slice(-10).length}
+                            {annualWaterWithdrawalData.length >= 5
+                              ? " років"
+                              : " роки"}
+                            , від лімітованих обсягів видобутку (
+                            {limitedProductionVolumes} тис.м³) :
+                          </p>
+                        </td>
+                        <td className="col-6">
+                          {maxForLastTenOrLessYearsPercent}%
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="col-6">
+                          <p className="card-text">
+                            Середній видобуток за останні{" "}
+                            {annualWaterWithdrawalData.slice(-10).length}
+                            {annualWaterWithdrawalData.length >= 5
+                              ? " років"
+                              : " роки"}
+                            , від лімітованих обсягів видобутку (
+                            {limitedProductionVolumes} тис.м³) :
+                          </p>
+                        </td>
+                        <td className="col-6">
+                          {averageForLastTenOrLessYearsPercent}%
+                        </td>
                       </tr>
                     </React.Fragment>
                   ) : null}

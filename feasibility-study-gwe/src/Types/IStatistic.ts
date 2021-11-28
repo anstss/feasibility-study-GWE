@@ -3,4 +3,7 @@ export default interface IStatistic {
   averageForPreviousYears: number;
   totalForLastTenYears: number;
   averageForLastTenYears: number;
+  maxForLastTenOrLessYears: number;
+  maxForLastTenOrLessYearsPercent: number;
+  averageForLastTenOrLessYearsPercent: number;
 }

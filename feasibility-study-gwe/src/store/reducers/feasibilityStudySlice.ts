@@ -4,6 +4,7 @@ import IStatistic from "../../Types/IStatistic";
 interface feasibilityStudyState {
   annualWaterWithdrawalData: number[];
   statistic: IStatistic;
+  limitedProductionVolumes: number;
 }
 
 const initialState: feasibilityStudyState = {
@@ -13,7 +14,11 @@ const initialState: feasibilityStudyState = {
     averageForPreviousYears: 0,
     totalForLastTenYears: 0,
     averageForLastTenYears: 0,
+    maxForLastTenOrLessYears: 0,
+    maxForLastTenOrLessYearsPercent: 0,
+    averageForLastTenOrLessYearsPercent: 0,
   },
+  limitedProductionVolumes: 0,
 };
 
 export const feasibilityStudySlice = createSlice({
@@ -30,14 +35,19 @@ export const feasibilityStudySlice = createSlice({
       state,
       action: PayloadAction<feasibilityStudyState>
     ) {
-      const { annualWaterWithdrawalData, statistic } = action.payload;
+      const { annualWaterWithdrawalData, statistic, limitedProductionVolumes } =
+        action.payload;
       state.annualWaterWithdrawalData = annualWaterWithdrawalData;
       state.statistic = statistic;
+      state.limitedProductionVolumes = limitedProductionVolumes;
     },
     clearData(state) {
       const { annualWaterWithdrawalData, statistic } = initialState;
       state.annualWaterWithdrawalData = annualWaterWithdrawalData;
       state.statistic = statistic;
+    },
+    setLimitedProductionVolumes(state, action: PayloadAction<number>) {
+      state.limitedProductionVolumes = action.payload;
     },
   },
 });
