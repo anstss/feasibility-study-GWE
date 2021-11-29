@@ -15,7 +15,7 @@ import {
   YAxis,
 } from "recharts";
 import IStatistic from "../../../Types/IStatistic";
-import { LOCAL_STORAGE_KEY } from "../../../shared/constants";
+import { LOCAL_STORAGE_KEY_ANALYSIS } from "../../../shared/constants";
 import { useStore } from "react-redux";
 import ButtonGroup from "../../button-group/buttonGroup";
 import DeleteModal from "../../delete-modal/deleteModal";
@@ -191,11 +191,11 @@ const AnalysisPage = () => {
 
   const saveDataAndStatisticToLocalStorage = () => {
     const data = store.getState().analysisWaterProductionVolumesReducer;
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(data));
+    localStorage.setItem(LOCAL_STORAGE_KEY_ANALYSIS, JSON.stringify(data));
   };
 
   const handleDeleteData = () => {
-    localStorage.removeItem(LOCAL_STORAGE_KEY);
+    localStorage.removeItem(LOCAL_STORAGE_KEY_ANALYSIS);
     dispatch(clearData());
     setWaterExtractionsData("");
   };

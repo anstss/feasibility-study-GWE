@@ -29,7 +29,7 @@ const initialState: analysisWaterProductionVolumesState = {
 };
 
 export const analysisWaterProductionVolumesSlice = createSlice({
-  name: "analysisWaterProductionVolumes ",
+  name: "analysisWaterProductionVolumes",
   initialState,
   reducers: {
     setAnnualWaterWithdrawalData(state, action: PayloadAction<number[]>) {
@@ -38,7 +38,7 @@ export const analysisWaterProductionVolumesSlice = createSlice({
     setStatistic(state, action: PayloadAction<IStatistic>) {
       state.statistic = action.payload;
     },
-    setDataFromLocalStorage(
+    setAnalysisDataFromLocalStorage(
       state,
       action: PayloadAction<analysisWaterProductionVolumesState>
     ) {
