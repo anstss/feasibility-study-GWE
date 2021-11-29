@@ -1,13 +1,18 @@
 import React from "react";
 import "./navbar.scss";
+import { Link } from "react-router-dom";
+import {
+  ANALYSIS_PAGE_ROUTE,
+  DEPRECIATION_PAGE_ROUTE,
+} from "../../shared/constants";
 
 const Navbar = () => {
   return (
     <nav className="navbar navbar-light bg-primary">
       <div className="container-fluid container">
-        <a className="navbar-brand text-white" href="#">
+        <Link to={"/"} className="navbar-brand text-white">
           ТЕО
-        </a>
+        </Link>
         <button
           className="navbar-toggler text-white"
           type="button"
@@ -37,14 +42,23 @@ const Navbar = () => {
           <div className="offcanvas-body">
             <ul className="navbar-nav justify-content-end flex-grow-1 pe-3">
               <li className="nav-item">
-                <a className="nav-link active" aria-current="page" href="#">
-                  Home
-                </a>
+                <Link to={"/"} className="nav-link active" aria-current="page">
+                  <div data-bs-toggle="offcanvas">Home</div>
+                </Link>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="#">
-                  Аналіз досягнутих обсягів видобутку води
-                </a>
+                <Link to={ANALYSIS_PAGE_ROUTE} className="nav-link">
+                  <div data-bs-toggle="offcanvas">
+                    Аналіз досягнутих обсягів видобутку води
+                  </div>
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link to={DEPRECIATION_PAGE_ROUTE} className="nav-link">
+                  <div data-bs-toggle="offcanvas">
+                    Капіталовкладення та амортизаційні витрати
+                  </div>
+                </Link>
               </li>
             </ul>
           </div>
