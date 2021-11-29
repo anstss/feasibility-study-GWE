@@ -7,4 +7,6 @@ export default interface IStatistic {
   maxForLastTenOrLessYearsPercent: number;
   averageForLastTenOrLessYearsPercent: number;
   waterLossVolumePercent: number;
+  averageAnnualProjectedWaterProduction: number;
+  averageAnnualProjectedWaterProductionWithLosses: number;
 }

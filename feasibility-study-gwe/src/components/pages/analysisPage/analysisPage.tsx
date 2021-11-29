@@ -25,11 +25,13 @@ const AnalysisPage = () => {
   const [waterExtractionsData, setWaterExtractionsData] = useState<string>("");
   const [limitProdVolumes, setLimitProdVolumes] = useState<string>("");
   const [lossVolume, setLossVolume] = useState<string>("");
+  const [projectedWaterProd, setProjectedWaterProd] = useState<string>("");
   const {
     annualWaterWithdrawalData,
     statistic,
     limitedProductionVolumes,
     waterLossVolume,
+    projectedWaterProduction,
   } = useAppSelector((state) => state.feasibilityStudyReducer);
   const {
     totalForPreviousYears,
@@ -40,6 +42,8 @@ const AnalysisPage = () => {
     maxForLastTenOrLessYearsPercent,
     averageForLastTenOrLessYearsPercent,
     waterLossVolumePercent,
+    averageAnnualProjectedWaterProduction,
+    averageAnnualProjectedWaterProductionWithLosses,
   } = statistic;
   const {
     setAnnualWaterWithdrawalData,
@@ -47,6 +51,7 @@ const AnalysisPage = () => {
     clearData,
     setLimitedProductionVolumes,
     setWaterLossVolume,
+    setProjectedWaterProduction,
   } = feasibilityStudySlice.actions;
   const dispatch = useAppDispatch();
   const [chartData, setChartData] = useState<ChartDataElement[]>([]);
@@ -60,6 +65,9 @@ const AnalysisPage = () => {
     }
     if (waterLossVolume) {
       setLossVolume(waterLossVolume.toString());
+    }
+    if (projectedWaterProduction) {
+      setProjectedWaterProd(projectedWaterProduction.toString());
     }
   }, [annualWaterWithdrawalData, limitedProductionVolumes]);
 
@@ -81,6 +89,9 @@ const AnalysisPage = () => {
     }
     if (!isNaN(+lossVolume)) {
       dispatch(setWaterLossVolume(+lossVolume));
+    }
+    if (!isNaN(+projectedWaterProd)) {
+      dispatch(setProjectedWaterProduction(+projectedWaterProd));
     }
   };
 
@@ -143,6 +154,19 @@ const AnalysisPage = () => {
         ).toFixed(2);
       }
     }
+    let averageAnnualProjectedWaterProduction = 0;
+    let averageAnnualProjectedWaterProductionWithLosses = 0;
+    if (projectedWaterProduction) {
+      averageAnnualProjectedWaterProduction = +(
+        projectedWaterProduction / 25
+      ).toFixed(2);
+      if (waterLossVolumePercent) {
+        averageAnnualProjectedWaterProductionWithLosses = +(
+          (averageAnnualProjectedWaterProduction / 100) *
+          (100 - waterLossVolumePercent)
+        ).toFixed(2);
+      }
+    }
     const statistic: IStatistic = {
       totalForPreviousYears,
       averageForPreviousYears,
@@ -152,6 +176,8 @@ const AnalysisPage = () => {
       maxForLastTenOrLessYearsPercent,
       averageForLastTenOrLessYearsPercent,
       waterLossVolumePercent,
+      averageAnnualProjectedWaterProduction,
+      averageAnnualProjectedWaterProductionWithLosses,
     };
     dispatch(setStatistic(statistic));
     saveDataAndStatisticToLocalStorage();
@@ -184,6 +210,12 @@ const AnalysisPage = () => {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     setLossVolume(event.target.value);
+  };
+
+  const handleChangeProjectedWaterProd = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setProjectedWaterProd(event.target.value);
   };
 
   return (
@@ -221,6 +253,16 @@ const AnalysisPage = () => {
         className="form-control mb-2"
         value={lossVolume}
         onChange={handleChangeLossVolume}
+      />
+      <div className="input-group-prepend input-text mb-2">
+        Введіть прогнозний видуботок води на 25 років (у тис.м³), всі нечислові
+        значення будуть проігноровані:
+      </div>
+      <input
+        type="text"
+        className="form-control mb-2"
+        value={projectedWaterProd}
+        onChange={handleChangeProjectedWaterProd}
       />
       <div className="d-flex flex-wrap justify-content-end mb-3">
         <button
@@ -379,6 +421,32 @@ const AnalysisPage = () => {
                         </p>
                       </td>
                       <td className="col-6">{waterLossVolumePercent}%</td>
+                    </tr>
+                  ) : null}
+                  {projectedWaterProduction ? (
+                    <tr>
+                      <td className="col-6">
+                        <p className="card-text">
+                          Середньорічний прогнозний видуботок води:
+                        </p>
+                      </td>
+                      <td className="col-6">
+                        {averageAnnualProjectedWaterProduction} тис.м³/рік
+                      </td>
+                    </tr>
+                  ) : null}
+                  {projectedWaterProduction && waterLossVolumePercent ? (
+                    <tr>
+                      <td className="col-6">
+                        <p className="card-text">
+                          Середньорічний прогнозний видуботок води, з
+                          урахуванням технологічних втрат:
+                        </p>
+                      </td>
+                      <td className="col-6">
+                        {averageAnnualProjectedWaterProductionWithLosses}{" "}
+                        тис.м³/рік
+                      </td>
                     </tr>
                   ) : null}
                 </tbody>
