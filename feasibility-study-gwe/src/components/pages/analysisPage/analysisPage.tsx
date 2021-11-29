@@ -200,6 +200,9 @@ const AnalysisPage = () => {
 
   const handleCancel = () => {
     setWaterExtractionsData("");
+    setLimitProdVolumes("");
+    setLossVolume("");
+    setProjectedWaterProd("");
   };
 
   const handleChangeLimitProdVolumes = (
@@ -219,6 +222,21 @@ const AnalysisPage = () => {
   ) => {
     setProjectedWaterProd(event.target.value);
   };
+
+  const [cancelIsDisabled, setCancelIsDisabled] = useState<boolean>(true);
+
+  useEffect(() => {
+    if (
+      waterExtractionsData ||
+      limitProdVolumes ||
+      lossVolume ||
+      projectedWaterProd
+    ) {
+      setCancelIsDisabled(false);
+    } else {
+      setCancelIsDisabled(true);
+    }
+  }, [waterExtractionsData, limitProdVolumes, lossVolume, projectedWaterProd]);
 
   return (
     <div>
@@ -271,7 +289,7 @@ const AnalysisPage = () => {
           type="button"
           className="btn btn-light mb-2"
           onClick={handleCancel}
-          disabled={!waterExtractionsData}
+          disabled={cancelIsDisabled}
         >
           Скасувати
         </button>
