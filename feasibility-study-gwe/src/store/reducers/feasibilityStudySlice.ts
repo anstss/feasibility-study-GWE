@@ -38,11 +38,16 @@ export const feasibilityStudySlice = createSlice({
       state,
       action: PayloadAction<feasibilityStudyState>
     ) {
-      const { annualWaterWithdrawalData, statistic, limitedProductionVolumes } =
-        action.payload;
+      const {
+        annualWaterWithdrawalData,
+        statistic,
+        limitedProductionVolumes,
+        waterLossVolume,
+      } = action.payload;
       state.annualWaterWithdrawalData = annualWaterWithdrawalData;
       state.statistic = statistic;
       state.limitedProductionVolumes = limitedProductionVolumes;
+      state.waterLossVolume = waterLossVolume;
     },
     clearData(state) {
       const { annualWaterWithdrawalData, statistic } = initialState;
