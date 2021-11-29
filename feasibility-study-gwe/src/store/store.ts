@@ -1,9 +1,9 @@
 import { combineReducers } from "redux";
 import { configureStore } from "@reduxjs/toolkit";
-import feasibilityStudyReducer from "./reducers/feasibilityStudySlice";
+import analysisWaterProductionVolumesReducer from "./reducers/analysisWaterProductionVolumesSlice";
 
 const rootReducer = combineReducers({
-  feasibilityStudyReducer,
+  analysisWaterProductionVolumesReducer,
 });
 
 export const setupStore = () => {

@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import IStatistic from "../../Types/IStatistic";
 
-interface feasibilityStudyState {
+interface analysisWaterProductionVolumesState {
   annualWaterWithdrawalData: number[];
   statistic: IStatistic;
   limitedProductionVolumes: number;
@@ -9,7 +9,7 @@ interface feasibilityStudyState {
   projectedWaterProduction: number;
 }
 
-const initialState: feasibilityStudyState = {
+const initialState: analysisWaterProductionVolumesState = {
   annualWaterWithdrawalData: [],
   statistic: {
     totalForPreviousYears: 0,
@@ -28,8 +28,8 @@ const initialState: feasibilityStudyState = {
   projectedWaterProduction: 0,
 };
 
-export const feasibilityStudySlice = createSlice({
-  name: "feasibilityStudy",
+export const analysisWaterProductionVolumesSlice = createSlice({
+  name: "analysisWaterProductionVolumes ",
   initialState,
   reducers: {
     setAnnualWaterWithdrawalData(state, action: PayloadAction<number[]>) {
@@ -40,7 +40,7 @@ export const feasibilityStudySlice = createSlice({
     },
     setDataFromLocalStorage(
       state,
-      action: PayloadAction<feasibilityStudyState>
+      action: PayloadAction<analysisWaterProductionVolumesState>
     ) {
       const {
         annualWaterWithdrawalData,
@@ -72,4 +72,4 @@ export const feasibilityStudySlice = createSlice({
   },
 });
 
-export default feasibilityStudySlice.reducer;
+export default analysisWaterProductionVolumesSlice.reducer;

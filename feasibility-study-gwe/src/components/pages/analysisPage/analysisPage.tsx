@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import "./analysisPage.scss";
-import { feasibilityStudySlice } from "../../../store/reducers/feasibilityStudySlice";
+import analysisWaterProductionVolumesReducer, {
+  analysisWaterProductionVolumesSlice,
+} from "../../../store/reducers/analysisWaterProductionVolumesSlice";
 import { useAppDispatch, useAppSelector } from "../../../hooks/redux-hooks";
 import {
   Bar,
@@ -32,7 +34,7 @@ const AnalysisPage = () => {
     limitedProductionVolumes,
     waterLossVolume,
     projectedWaterProduction,
-  } = useAppSelector((state) => state.feasibilityStudyReducer);
+  } = useAppSelector((state) => state.analysisWaterProductionVolumesReducer);
   const {
     totalForPreviousYears,
     averageForPreviousYears,
@@ -52,7 +54,7 @@ const AnalysisPage = () => {
     setLimitedProductionVolumes,
     setWaterLossVolume,
     setProjectedWaterProduction,
-  } = feasibilityStudySlice.actions;
+  } = analysisWaterProductionVolumesSlice.actions;
   const dispatch = useAppDispatch();
   const [chartData, setChartData] = useState<ChartDataElement[]>([]);
 
@@ -186,7 +188,7 @@ const AnalysisPage = () => {
   const store = useStore();
 
   const saveDataAndStatisticToLocalStorage = () => {
-    const data = store.getState().feasibilityStudyReducer;
+    const data = store.getState().analysisWaterProductionVolumesReducer;
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(data));
   };
 
