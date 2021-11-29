@@ -56,9 +56,18 @@ export const analysisWaterProductionVolumesSlice = createSlice({
       state.projectedWaterProduction = projectedWaterProduction;
     },
     clearData(state) {
-      const { annualWaterWithdrawalData, statistic } = initialState;
+      const {
+        annualWaterWithdrawalData,
+        statistic,
+        limitedProductionVolumes,
+        waterLossVolume,
+        projectedWaterProduction,
+      } = initialState;
       state.annualWaterWithdrawalData = annualWaterWithdrawalData;
       state.statistic = statistic;
+      state.limitedProductionVolumes = limitedProductionVolumes;
+      state.waterLossVolume = waterLossVolume;
+      state.projectedWaterProduction = projectedWaterProduction;
     },
     setLimitedProductionVolumes(state, action: PayloadAction<number>) {
       state.limitedProductionVolumes = action.payload;

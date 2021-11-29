@@ -17,6 +17,8 @@ import {
 import IStatistic from "../../../Types/IStatistic";
 import { LOCAL_STORAGE_KEY } from "../../../shared/constants";
 import { useStore } from "react-redux";
+import ButtonGroup from "../../button-group/buttonGroup";
+import DeleteModal from "../../delete-modal/deleteModal";
 
 type ChartDataElement = {
   year: number;
@@ -284,33 +286,14 @@ const AnalysisPage = () => {
         value={projectedWaterProd}
         onChange={handleChangeProjectedWaterProd}
       />
-      <div className="d-flex flex-wrap justify-content-end mb-3">
-        <button
-          type="button"
-          className="btn btn-light mb-2"
-          onClick={handleCancel}
-          disabled={cancelIsDisabled}
-        >
-          Скасувати
-        </button>
-        <button
-          type="button"
-          className="btn btn-danger ms-2 mb-2"
-          disabled={!annualWaterWithdrawalData.length}
-          data-bs-toggle="modal"
-          data-bs-target="#deleteModal"
-        >
-          Видалити дані
-        </button>
-        <button
-          type="button"
-          className="btn btn-primary ms-2 mb-2"
-          onClick={handleAnalyses}
-          disabled={!waterExtractionsData}
-        >
-          Виконати аналіз
-        </button>
-      </div>
+      <ButtonGroup
+        handleCancel={handleCancel}
+        cancelIsDisabled={cancelIsDisabled}
+        deleteIsDisabled={!annualWaterWithdrawalData.length}
+        handleDataIsDisabled={!waterExtractionsData}
+        handleData={handleAnalyses}
+        handleDataBtnText={"Виконати аналіз"}
+      />
       {chartData.length ? (
         <React.Fragment>
           <h4 className="card-title text-center mb-3">
@@ -475,47 +458,7 @@ const AnalysisPage = () => {
           </div>
         </React.Fragment>
       ) : null}
-      <div
-        className="modal fade"
-        id="deleteModal"
-        tabIndex={-1}
-        aria-labelledby="exampleModalLabel"
-        aria-hidden="true"
-      >
-        <div className="modal-dialog">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title" id="exampleModalLabel">
-                Видалення
-              </h5>
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div className="modal-body">Видалити данні?</div>
-            <div className="modal-footer">
-              <button
-                type="button"
-                className="btn btn-secondary"
-                data-bs-dismiss="modal"
-              >
-                Ні
-              </button>
-              <button
-                type="button"
-                className="btn btn-danger"
-                onClick={handleDeleteData}
-                data-bs-dismiss="modal"
-              >
-                Так
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+      <DeleteModal handleDeleteData={handleDeleteData} />
     </div>
   );
 };
