@@ -15,6 +15,7 @@ const DepreciationExpensesSchema = Yup.object().shape({
   geologicalInformation: Yup.number().typeError("Введіть число"),
   fieldsExploration: Yup.number().typeError("Введіть число"),
   stateExamination: Yup.number().typeError("Введіть число"),
+  fixedAssets: Yup.number().typeError("Введіть число"),
 });
 
 const expensesInitialState: IExpenses = {
@@ -26,8 +27,13 @@ const expensesInitialState: IExpenses = {
 
 const DepreciationPage = () => {
   const [expenses, setExpenses] = useState<IExpenses>(expensesInitialState);
-  const { depreciationPercent, expensesAmount, depreciationCharges } =
-    useAppSelector((state) => state.depreciationChargesCalculationReducer);
+  const {
+    depreciationPercent,
+    expensesAmount,
+    depreciationCharges,
+    fixedAssets,
+    fixedAssetsCharges,
+  } = useAppSelector((state) => state.depreciationChargesCalculationReducer);
   const {
     specialPermission,
     geologicalInformation,
@@ -44,6 +50,12 @@ const DepreciationPage = () => {
   const [totalExpenses, setTotalExpenses] = useState<number>(0);
   const [totalDepreciationCharges, setTotalDepreciationCharges] =
     useState<number>(0);
+  const [totalExpensesWithFixedAssets, setTotalExpensesWithFixedAssets] =
+    useState<number>(0);
+  const [
+    totalDepreciationChargesWithFixedAssets,
+    setTotalDepreciationChargesWithFixedAssets,
+  ] = useState<number>(0);
 
   useEffect(() => {
     if (depreciationPercent) {
@@ -61,21 +73,31 @@ const DepreciationPage = () => {
     if (stateExamination) {
       formik.values.stateExamination = stateExamination;
     }
+    if (fixedAssets) {
+      formik.values.fixedAssets = fixedAssets.toString();
+    }
   }, [
+    depreciationPercent,
     specialPermission,
     geologicalInformation,
     fieldsExploration,
     stateExamination,
+    fixedAssets,
   ]);
 
   const dispatch = useAppDispatch();
-  const { setDepreciationPercent, setExpensesAmount, setDepreciationCharges } =
-    depreciationChargesCalculationSlice.actions;
+  const {
+    setDepreciationPercent,
+    setExpensesAmount,
+    setDepreciationCharges,
+    setFixedAssetsAndCharges,
+  } = depreciationChargesCalculationSlice.actions;
 
   const formik = useFormik({
     initialValues: {
       depreciationPercent: "",
       ...expenses,
+      fixedAssets: "",
     },
     validationSchema: DepreciationExpensesSchema,
     onSubmit: (values) => {
@@ -90,6 +112,7 @@ const DepreciationPage = () => {
       geologicalInformation,
       fieldsExploration,
       stateExamination,
+      fixedAssets,
     } = formik.values;
     let specialPermissionDepreciationCharges = 0;
     let geologicalInformationDepreciationCharges = 0;
@@ -132,9 +155,22 @@ const DepreciationPage = () => {
       fieldsExplorationDepreciationCharges,
       stateExaminationDepreciationCharges,
     };
+    let fixedAssetsCharges = 0;
+    if (fixedAssets) {
+      fixedAssetsCharges = +(
+        (+fixedAssets / 100) *
+        +depreciationPercent
+      ).toFixed(2);
+    }
     dispatch(setDepreciationPercent(+(+depreciationPercent).toFixed(2)));
     dispatch(setExpensesAmount(expensesAmount));
     dispatch(setDepreciationCharges(depreciationCharges));
+    dispatch(
+      setFixedAssetsAndCharges({
+        fixedAssets: +fixedAssets,
+        fixedAssetsCharges,
+      })
+    );
     saveDepreciationDataToLocalStorage();
   };
 
@@ -149,6 +185,7 @@ const DepreciationPage = () => {
     formik.setValues({
       depreciationPercent: "",
       ...expensesInitialState,
+      fixedAssets: "",
     });
   };
 
@@ -174,7 +211,7 @@ const DepreciationPage = () => {
       setCancelIsDisabled(true);
     }
     const totalExpensesKeys = Object.keys(formik.values).filter(
-      (key) => key !== "depreciationPercent"
+      (key) => key !== "depreciationPercent" && key !== "fixedAssets"
     );
     let totalExpenses = 0;
     totalExpensesKeys.forEach((key) => {
@@ -188,12 +225,17 @@ const DepreciationPage = () => {
         depreciationCharges[key as keyof IDepreciationCharges];
     });
     setTotalDepreciationCharges(totalDepreciationCharges);
+    setTotalExpensesWithFixedAssets(+(fixedAssets + totalExpenses).toFixed(2));
+    setTotalDepreciationChargesWithFixedAssets(
+      +(fixedAssetsCharges + totalDepreciationCharges).toFixed(2)
+    );
   }, [
     formik.values.depreciationPercent,
     formik.values.specialPermission,
     formik.values.geologicalInformation,
     formik.values.fieldsExploration,
     formik.values.stateExamination,
+    formik.values.fixedAssets,
   ]);
 
   return (
@@ -317,9 +359,35 @@ const DepreciationPage = () => {
             </tr>
             <tr>
               <th scope="row"></th>
-              <td>Всього:</td>
+              <td>Всього (нематеріальні активи):</td>
               <td>{totalExpenses}</td>
               <td>{totalDepreciationCharges}</td>
+            </tr>
+            <tr>
+              <th scope="row">5</th>
+              <td>Основні засоби:</td>
+              <td>
+                <input
+                  name={"fixedAssets"}
+                  type="text"
+                  className="form-control"
+                  placeholder={"Введіть суму витрат"}
+                  value={formik.values.fixedAssets}
+                  onChange={formik.handleChange}
+                />
+                {formik.errors.fixedAssets && (
+                  <div className="invalid-feedback d-block">
+                    {formik.errors.fixedAssets}
+                  </div>
+                )}
+              </td>
+              <td>{fixedAssetsCharges}</td>
+            </tr>
+            <tr>
+              <th scope="row"></th>
+              <td>Разом:</td>
+              <td>{totalExpensesWithFixedAssets}</td>
+              <td>{totalDepreciationChargesWithFixedAssets}</td>
             </tr>
           </tbody>
         </table>
