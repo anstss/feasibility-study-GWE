@@ -82,6 +82,24 @@ export const depreciationChargesCalculationSlice = createSlice({
       state.investments = investments;
       state.investmentsCharges = investmentsCharges;
     },
+    clearDataDepreciation(state) {
+      const {
+        depreciationPercent,
+        expensesAmount,
+        depreciationCharges,
+        fixedAssets,
+        fixedAssetsCharges,
+        investments,
+        investmentsCharges,
+      } = initialState;
+      state.depreciationPercent = depreciationPercent;
+      state.expensesAmount = expensesAmount;
+      state.depreciationCharges = depreciationCharges;
+      state.fixedAssets = fixedAssets;
+      state.fixedAssetsCharges = fixedAssetsCharges;
+      state.investments = investments;
+      state.investmentsCharges = investmentsCharges;
+    },
   },
 });
 

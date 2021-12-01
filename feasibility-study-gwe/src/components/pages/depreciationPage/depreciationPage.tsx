@@ -8,6 +8,7 @@ import { depreciationChargesCalculationSlice } from "../../../store/reducers/dep
 import { useStore } from "react-redux";
 import { LOCAL_STORAGE_KEY_DEPRECIATION } from "../../../shared/constants";
 import IDepreciationCharges from "../../../Types/IDepreciationCharges";
+import DeleteModal from "../../delete-modal/deleteModal";
 
 const DepreciationExpensesSchema = Yup.object().shape({
   depreciationPercent: Yup.number().typeError("Введіть число"),
@@ -101,7 +102,7 @@ const DepreciationPage = () => {
       formik.values.fixedAssets = fixedAssets.toString();
     }
     if (investments) {
-      formik.values.investments = fixedAssets.toString();
+      formik.values.investments = investments.toString();
     }
   }, [
     depreciationPercent,
@@ -110,6 +111,7 @@ const DepreciationPage = () => {
     fieldsExploration,
     stateExamination,
     fixedAssets,
+    investments,
   ]);
 
   const dispatch = useAppDispatch();
@@ -119,6 +121,7 @@ const DepreciationPage = () => {
     setDepreciationCharges,
     setFixedAssetsAndCharges,
     setInvestmentsAndCharges,
+    clearDataDepreciation,
   } = depreciationChargesCalculationSlice.actions;
 
   const formik = useFormik({
@@ -265,6 +268,7 @@ const DepreciationPage = () => {
       geologicalInformation,
       fieldsExploration,
       stateExamination,
+      fixedAssets,
       investments,
     } = formik.values;
     if (
@@ -289,15 +293,15 @@ const DepreciationPage = () => {
     totalExpensesKeys.forEach((key) => {
       totalExpenses += +formik.values[key as keyof IExpenses];
     });
-    setTotalExpenses(totalExpenses);
+    setTotalExpenses(+totalExpenses.toFixed(2));
     const totalDepreciationChargesKeys = Object.keys(depreciationCharges);
     let totalDepreciationCharges = 0;
     totalDepreciationChargesKeys.forEach((key) => {
       totalDepreciationCharges +=
         depreciationCharges[key as keyof IDepreciationCharges];
     });
-    setTotalDepreciationCharges(totalDepreciationCharges);
-    setTotalExpensesWithFixedAssets(+(fixedAssets + totalExpenses).toFixed(2));
+    setTotalDepreciationCharges(+totalDepreciationCharges.toFixed(2));
+    setTotalExpensesWithFixedAssets(+(+fixedAssets + totalExpenses).toFixed(2));
     setTotalDepreciationChargesWithFixedAssets(
       +(fixedAssetsCharges + totalDepreciationCharges).toFixed(2)
     );
@@ -309,7 +313,19 @@ const DepreciationPage = () => {
     formik.values.stateExamination,
     formik.values.fixedAssets,
     formik.values.investments,
+    fixedAssetsCharges,
   ]);
+
+  const handleDeleteData = () => {
+    localStorage.removeItem(LOCAL_STORAGE_KEY_DEPRECIATION);
+    dispatch(clearDataDepreciation());
+    formik.setValues({
+      depreciationPercent: "",
+      ...expenses,
+      fixedAssets: "",
+      investments: "",
+    });
+  };
 
   return (
     <div>
@@ -488,8 +504,24 @@ const DepreciationPage = () => {
       <ButtonGroup
         handleCancel={handleCancel}
         cancelIsDisabled={cancelIsDisabled}
-        deleteIsDisabled={false}
-        handleDataIsDisabled={false}
+        deleteIsDisabled={
+          !depreciationPercent ||
+          !specialPermission ||
+          !geologicalInformation ||
+          !fieldsExploration ||
+          !stateExamination ||
+          !fixedAssets ||
+          !investments
+        }
+        handleDataIsDisabled={
+          !formik.values.depreciationPercent &&
+          (!specialPermission ||
+            !geologicalInformation ||
+            !fieldsExploration ||
+            !stateExamination ||
+            !fixedAssets ||
+            !investments)
+        }
         handleData={handleCalculating}
         handleDataBtnText={"Розрахувати"}
       />
@@ -527,6 +559,7 @@ const DepreciationPage = () => {
           </table>
         </div>
       ) : null}
+      <DeleteModal handleDeleteData={handleDeleteData} />
     </div>
   );
 };
