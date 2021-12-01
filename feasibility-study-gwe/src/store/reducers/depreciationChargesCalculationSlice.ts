@@ -8,6 +8,8 @@ interface depreciationChargesCalculationState {
   depreciationCharges: IDepreciationCharges;
   fixedAssets: number;
   fixedAssetsCharges: number;
+  investments: number;
+  investmentsCharges: number;
 }
 
 const initialState: depreciationChargesCalculationState = {
@@ -26,6 +28,8 @@ const initialState: depreciationChargesCalculationState = {
   },
   fixedAssets: 0,
   fixedAssetsCharges: 0,
+  investments: 0,
+  investmentsCharges: 0,
 };
 
 export const depreciationChargesCalculationSlice = createSlice({
@@ -49,6 +53,14 @@ export const depreciationChargesCalculationSlice = createSlice({
       state.fixedAssets = fixedAssets;
       state.fixedAssetsCharges = fixedAssetsCharges;
     },
+    setInvestmentsAndCharges(
+      state,
+      action: PayloadAction<{ investments: number; investmentsCharges: number }>
+    ) {
+      const { investments, investmentsCharges } = action.payload;
+      state.investments = investments;
+      state.investmentsCharges = investmentsCharges;
+    },
     setDepreciationDataFromLocalStorage(
       state,
       action: PayloadAction<depreciationChargesCalculationState>
@@ -59,12 +71,16 @@ export const depreciationChargesCalculationSlice = createSlice({
         depreciationCharges,
         fixedAssets,
         fixedAssetsCharges,
+        investments,
+        investmentsCharges,
       } = action.payload;
       state.depreciationPercent = depreciationPercent;
       state.expensesAmount = expensesAmount;
       state.depreciationCharges = depreciationCharges;
       state.fixedAssets = fixedAssets;
       state.fixedAssetsCharges = fixedAssetsCharges;
+      state.investments = investments;
+      state.investmentsCharges = investmentsCharges;
     },
   },
 });

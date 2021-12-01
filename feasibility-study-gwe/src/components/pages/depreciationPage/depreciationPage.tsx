@@ -16,6 +16,7 @@ const DepreciationExpensesSchema = Yup.object().shape({
   fieldsExploration: Yup.number().typeError("Введіть число"),
   stateExamination: Yup.number().typeError("Введіть число"),
   fixedAssets: Yup.number().typeError("Введіть число"),
+  investments: Yup.number().typeError("Введіть число"),
 });
 
 const expensesInitialState: IExpenses = {
@@ -23,6 +24,18 @@ const expensesInitialState: IExpenses = {
   geologicalInformation: "",
   fieldsExploration: "",
   stateExamination: "",
+};
+
+type CapitalInvestments = {
+  forAnnualProduction: number;
+  forOperationYear: number;
+  includingInvestments: number;
+};
+
+const capitalInvestmentsInitialState: CapitalInvestments = {
+  forAnnualProduction: 0,
+  forOperationYear: 0,
+  includingInvestments: 0,
 };
 
 const DepreciationPage = () => {
@@ -33,6 +46,8 @@ const DepreciationPage = () => {
     depreciationCharges,
     fixedAssets,
     fixedAssetsCharges,
+    investments,
+    investmentsCharges,
   } = useAppSelector((state) => state.depreciationChargesCalculationReducer);
   const {
     specialPermission,
@@ -47,6 +62,10 @@ const DepreciationPage = () => {
     stateExaminationDepreciationCharges,
   } = depreciationCharges;
 
+  const { averageAnnualProjectedWaterProduction } = useAppSelector(
+    (state) => state.analysisWaterProductionVolumesReducer.statistic
+  );
+
   const [totalExpenses, setTotalExpenses] = useState<number>(0);
   const [totalDepreciationCharges, setTotalDepreciationCharges] =
     useState<number>(0);
@@ -56,6 +75,11 @@ const DepreciationPage = () => {
     totalDepreciationChargesWithFixedAssets,
     setTotalDepreciationChargesWithFixedAssets,
   ] = useState<number>(0);
+
+  const [capitalInvestments, setCapitalInvestments] =
+    useState<CapitalInvestments>(capitalInvestmentsInitialState);
+  const { forAnnualProduction, forOperationYear, includingInvestments } =
+    capitalInvestments;
 
   useEffect(() => {
     if (depreciationPercent) {
@@ -76,6 +100,9 @@ const DepreciationPage = () => {
     if (fixedAssets) {
       formik.values.fixedAssets = fixedAssets.toString();
     }
+    if (investments) {
+      formik.values.investments = fixedAssets.toString();
+    }
   }, [
     depreciationPercent,
     specialPermission,
@@ -91,6 +118,7 @@ const DepreciationPage = () => {
     setExpensesAmount,
     setDepreciationCharges,
     setFixedAssetsAndCharges,
+    setInvestmentsAndCharges,
   } = depreciationChargesCalculationSlice.actions;
 
   const formik = useFormik({
@@ -98,6 +126,7 @@ const DepreciationPage = () => {
       depreciationPercent: "",
       ...expenses,
       fixedAssets: "",
+      investments: "",
     },
     validationSchema: DepreciationExpensesSchema,
     onSubmit: (values) => {
@@ -113,6 +142,7 @@ const DepreciationPage = () => {
       fieldsExploration,
       stateExamination,
       fixedAssets,
+      investments,
     } = formik.values;
     let specialPermissionDepreciationCharges = 0;
     let geologicalInformationDepreciationCharges = 0;
@@ -162,6 +192,13 @@ const DepreciationPage = () => {
         +depreciationPercent
       ).toFixed(2);
     }
+    let investmentsCharges = 0;
+    if (investments) {
+      investmentsCharges = +(
+        (+investments / 100) *
+        +depreciationPercent
+      ).toFixed(2);
+    }
     dispatch(setDepreciationPercent(+(+depreciationPercent).toFixed(2)));
     dispatch(setExpensesAmount(expensesAmount));
     dispatch(setDepreciationCharges(depreciationCharges));
@@ -169,6 +206,12 @@ const DepreciationPage = () => {
       setFixedAssetsAndCharges({
         fixedAssets: +fixedAssets,
         fixedAssetsCharges,
+      })
+    );
+    dispatch(
+      setInvestmentsAndCharges({
+        investments: +investments,
+        investmentsCharges,
       })
     );
     saveDepreciationDataToLocalStorage();
@@ -186,8 +229,32 @@ const DepreciationPage = () => {
       depreciationPercent: "",
       ...expensesInitialState,
       fixedAssets: "",
+      investments: "",
     });
   };
+
+  useEffect(() => {
+    if (!averageAnnualProjectedWaterProduction || !totalExpensesWithFixedAssets)
+      return;
+    const forAnnualProduction = +(
+      totalExpensesWithFixedAssets / averageAnnualProjectedWaterProduction
+    ).toFixed(2);
+    const forOperationYear = +(forAnnualProduction / 25).toFixed(2);
+    const includingInvestments = +(
+      (totalExpensesWithFixedAssets + investments) /
+      averageAnnualProjectedWaterProduction /
+      25
+    ).toFixed(2);
+    setCapitalInvestments({
+      forAnnualProduction,
+      forOperationYear,
+      includingInvestments,
+    });
+  }, [
+    averageAnnualProjectedWaterProduction,
+    totalExpensesWithFixedAssets,
+    investments,
+  ]);
 
   const [cancelIsDisabled, setCancelIsDisabled] = useState<boolean>(true);
 
@@ -198,20 +265,25 @@ const DepreciationPage = () => {
       geologicalInformation,
       fieldsExploration,
       stateExamination,
+      investments,
     } = formik.values;
     if (
       depreciationPercent ||
       specialPermission ||
       geologicalInformation ||
       fieldsExploration ||
-      stateExamination
+      stateExamination ||
+      investments
     ) {
       setCancelIsDisabled(false);
     } else {
       setCancelIsDisabled(true);
     }
     const totalExpensesKeys = Object.keys(formik.values).filter(
-      (key) => key !== "depreciationPercent" && key !== "fixedAssets"
+      (key) =>
+        key !== "depreciationPercent" &&
+        key !== "fixedAssets" &&
+        key !== "investments"
     );
     let totalExpenses = 0;
     totalExpensesKeys.forEach((key) => {
@@ -236,6 +308,7 @@ const DepreciationPage = () => {
     formik.values.fieldsExploration,
     formik.values.stateExamination,
     formik.values.fixedAssets,
+    formik.values.investments,
   ]);
 
   return (
@@ -270,7 +343,7 @@ const DepreciationPage = () => {
             </tr>
           </thead>
           <tbody>
-            <tr>
+            <tr className="table-primary">
               <th scope="row">1</th>
               <td>
                 Плата за спецдозвіл на користування надрами з метою видобування
@@ -292,7 +365,7 @@ const DepreciationPage = () => {
               </td>
               <td>{specialPermissionDepreciationCharges}</td>
             </tr>
-            <tr>
+            <tr className="table-primary">
               <th scope="row">2</th>
               <td>Витрати на придбання геологічної інформації</td>
               <td>
@@ -312,7 +385,7 @@ const DepreciationPage = () => {
               </td>
               <td>{geologicalInformationDepreciationCharges}</td>
             </tr>
-            <tr>
+            <tr className="table-primary">
               <th scope="row">3</th>
               <td>
                 Витрати на детальну розвідку ділянок родовища підземних вод
@@ -334,7 +407,7 @@ const DepreciationPage = () => {
               </td>
               <td>{fieldsExplorationDepreciationCharges}</td>
             </tr>
-            <tr>
+            <tr className="table-primary">
               <th scope="row">4</th>
               <td>
                 Витрати, пов’язані із державною експертизою і оцінкою
@@ -357,13 +430,13 @@ const DepreciationPage = () => {
               </td>
               <td>{stateExaminationDepreciationCharges}</td>
             </tr>
-            <tr>
+            <tr className="table-primary">
               <th scope="row"></th>
               <td>Всього (нематеріальні активи):</td>
               <td>{totalExpenses}</td>
               <td>{totalDepreciationCharges}</td>
             </tr>
-            <tr>
+            <tr className="table-success">
               <th scope="row">5</th>
               <td>Основні засоби:</td>
               <td>
@@ -389,6 +462,26 @@ const DepreciationPage = () => {
               <td>{totalExpensesWithFixedAssets}</td>
               <td>{totalDepreciationChargesWithFixedAssets}</td>
             </tr>
+            <tr>
+              <th scope="row">6</th>
+              <td>Інвестиції:</td>
+              <td>
+                <input
+                  name={"investments"}
+                  type="text"
+                  className="form-control"
+                  placeholder={"Введіть суму витрат"}
+                  value={formik.values.investments}
+                  onChange={formik.handleChange}
+                />
+                {formik.errors.investments && (
+                  <div className="invalid-feedback d-block">
+                    {formik.errors.investments}
+                  </div>
+                )}
+              </td>
+              <td>{investmentsCharges}</td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -400,6 +493,40 @@ const DepreciationPage = () => {
         handleData={handleCalculating}
         handleDataBtnText={"Розрахувати"}
       />
+      {averageAnnualProjectedWaterProduction && totalExpensesWithFixedAssets ? (
+        <div className="table-responsive mb-4">
+          <table className="table table-striped table-hover">
+            <thead>
+              <tr>
+                <th>№</th>
+                <th scope="col" colSpan={2}>
+                  Питомі капіталовкладення
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">1</th>
+                <td className="col-6">
+                  На 1 м³ при річному видобутку{" "}
+                  {averageAnnualProjectedWaterProduction} тис.м³/рік:
+                </td>
+                <td className="col-6">{forAnnualProduction} грн/м³</td>
+              </tr>
+              <tr>
+                <th scope="row">2</th>
+                <td className="col-6">На один рік експлуатації:</td>
+                <td className="col-6">{forOperationYear} грн/м³</td>
+              </tr>
+              <tr>
+                <th scope="row">3</th>
+                <td className="col-6">На 1 м³ урахуванням інвестицій:</td>
+                <td className="col-6">{includingInvestments} грн/м³</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      ) : null}
     </div>
   );
 };
