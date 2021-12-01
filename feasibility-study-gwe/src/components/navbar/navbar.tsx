@@ -48,14 +48,14 @@ const Navbar = () => {
               </li>
               <li className="nav-item">
                 <Link to={ANALYSIS_PAGE_ROUTE} className="nav-link">
-                  <div data-bs-toggle="offcanvas">
+                  <div data-bs-dismiss="offcanvas">
                     Аналіз досягнутих обсягів видобутку води
                   </div>
                 </Link>
               </li>
               <li className="nav-item">
                 <Link to={DEPRECIATION_PAGE_ROUTE} className="nav-link">
-                  <div data-bs-toggle="offcanvas">
+                  <div data-bs-dismiss="offcanvas">
                     Капіталовкладення та амортизаційні витрати
                   </div>
                 </Link>
