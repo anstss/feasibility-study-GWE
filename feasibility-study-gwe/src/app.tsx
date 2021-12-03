@@ -7,6 +7,7 @@ import {
   COST_PRICE_PAGE_ROUTE,
   DEPRECIATION_PAGE_ROUTE,
   LOCAL_STORAGE_KEY_ANALYSIS,
+  LOCAL_STORAGE_KEY_COST_PRICE,
   LOCAL_STORAGE_KEY_DEPRECIATION,
 } from "./shared/constants";
 import { useAppDispatch } from "./hooks/redux-hooks";
@@ -15,6 +16,7 @@ import { Routes, Route } from "react-router-dom";
 import DepreciationPage from "./components/pages/depreciationPage/depreciationPage";
 import { depreciationChargesCalculationSlice } from "./store/reducers/depreciationChargesCalculationSlice";
 import CostPricePage from "./components/pages/costPricePage/costPricePage";
+import { costPriceSlice } from "./store/reducers/costPriceSlice";
 
 function App() {
   const dispatch = useAppDispatch();
@@ -22,19 +24,25 @@ function App() {
     analysisWaterProductionVolumesSlice.actions;
   const { setDepreciationDataFromLocalStorage } =
     depreciationChargesCalculationSlice.actions;
+  const { setCostPriceData } = costPriceSlice.actions;
 
   useEffect(() => {
-    const dataAnalysis = localStorage.getItem(LOCAL_STORAGE_KEY_ANALYSIS);
-    if (dataAnalysis) {
-      dispatch(setAnalysisDataFromLocalStorage(JSON.parse(dataAnalysis)));
+    const analysisData = localStorage.getItem(LOCAL_STORAGE_KEY_ANALYSIS);
+    if (analysisData) {
+      dispatch(setAnalysisDataFromLocalStorage(JSON.parse(analysisData)));
     }
-    const dataDepreciation = localStorage.getItem(
+    const depreciationData = localStorage.getItem(
       LOCAL_STORAGE_KEY_DEPRECIATION
     );
-    if (dataDepreciation) {
+    if (depreciationData) {
       dispatch(
-        setDepreciationDataFromLocalStorage(JSON.parse(dataDepreciation))
+        setDepreciationDataFromLocalStorage(JSON.parse(depreciationData))
       );
+    }
+    const costPriceData = localStorage.getItem(LOCAL_STORAGE_KEY_COST_PRICE);
+    if (costPriceData) {
+      console.log(JSON.parse(costPriceData));
+      dispatch(setCostPriceData(JSON.parse(costPriceData)));
     }
   }, []);
 

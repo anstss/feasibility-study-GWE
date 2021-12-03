@@ -2,20 +2,20 @@ import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import ButtonGroup from "../../button-group/buttonGroup";
+import {
+  LOCAL_STORAGE_KEY_COST_PRICE,
+  LOCAL_STORAGE_KEY_DEPRECIATION,
+} from "../../../shared/constants";
+import { useStore } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../../../hooks/redux-hooks";
+import { costPriceSlice } from "../../../store/reducers/costPriceSlice";
+import DeleteModal from "../../delete-modal/deleteModal";
 
 const CostPricePageSchema = Yup.object().shape({
-  costPrice: Yup.number()
-    .typeError("Введіть число")
-    .required("Заповніть це поле"),
-  rentRateGWUse: Yup.number()
-    .typeError("Введіть число")
-    .required("Заповніть це поле"),
-  coefficientRentRateGWUse: Yup.number()
-    .typeError("Введіть число")
-    .required("Заповніть це поле"),
-  rentRateSubsoilUse: Yup.number()
-    .typeError("Введіть число")
-    .required("Заповніть це поле"),
+  costPrice: Yup.number().typeError("Введіть число"),
+  rentRateGWUse: Yup.number().typeError("Введіть число"),
+  coefficientRentRateGWUse: Yup.number().typeError("Введіть число"),
+  rentRateSubsoilUse: Yup.number().typeError("Введіть число"),
 });
 
 const CostPricePage = () => {
@@ -41,9 +41,35 @@ const CostPricePage = () => {
     });
   };
 
+  const dispatch = useAppDispatch();
   const [cancelIsDisabled, setCancelIsDisabled] = useState<boolean>(true);
+  const [deleteIsDisabled, setDeleteIsDisabled] = useState<boolean>(true);
   const [handleDataIsDisabled, setHandleDataIsDisabled] =
     useState<boolean>(true);
+  const {
+    costPrice,
+    rentRateGWUse,
+    coefficientRentRateGWUse,
+    rentRateSubsoilUse,
+  } = useAppSelector((state) => state.costPriceReducer);
+
+  const { setCostPriceData, clearCostPriceData } = costPriceSlice.actions;
+
+  useEffect(() => {
+    if (costPrice) {
+      formik.values.costPrice = costPrice.toString();
+    }
+    if (rentRateGWUse) {
+      formik.values.rentRateGWUse = rentRateGWUse.toString();
+    }
+    if (coefficientRentRateGWUse) {
+      formik.values.coefficientRentRateGWUse =
+        coefficientRentRateGWUse.toString();
+    }
+    if (rentRateSubsoilUse) {
+      formik.values.rentRateSubsoilUse = rentRateSubsoilUse.toString();
+    }
+  }, [costPrice, rentRateGWUse, coefficientRentRateGWUse, rentRateSubsoilUse]);
 
   useEffect(() => {
     const {
@@ -79,8 +105,53 @@ const CostPricePage = () => {
     formik.values.rentRateSubsoilUse,
   ]);
 
+  useEffect(() => {
+    if (
+      costPrice ||
+      rentRateGWUse ||
+      coefficientRentRateGWUse ||
+      rentRateGWUse
+    ) {
+      setDeleteIsDisabled(false);
+    } else {
+      setDeleteIsDisabled(true);
+    }
+  }, [costPrice, rentRateGWUse, coefficientRentRateGWUse, rentRateSubsoilUse]);
+
   const handleCalculating = () => {
-    console.log("test");
+    const {
+      costPrice,
+      rentRateGWUse,
+      rentRateSubsoilUse,
+      coefficientRentRateGWUse,
+    } = formik.values;
+    dispatch(
+      setCostPriceData({
+        costPrice: +costPrice,
+        rentRateGWUse: +rentRateGWUse,
+        rentRateSubsoilUse: +rentRateSubsoilUse,
+        coefficientRentRateGWUse: +coefficientRentRateGWUse,
+      })
+    );
+    saveCostPriceDataToLocalStorage();
+  };
+
+  const store = useStore();
+
+  const saveCostPriceDataToLocalStorage = () => {
+    const data = store.getState().costPriceReducer;
+    localStorage.setItem(LOCAL_STORAGE_KEY_COST_PRICE, JSON.stringify(data));
+  };
+
+  const handleDeleteData = () => {
+    localStorage.removeItem(LOCAL_STORAGE_KEY_COST_PRICE);
+    dispatch(clearCostPriceData());
+    formik.setValues({
+      costPrice: "",
+      rentRateGWUse: "",
+      coefficientRentRateGWUse: "",
+      rentRateSubsoilUse: "",
+    });
   };
 
   return (
@@ -102,7 +173,8 @@ const CostPricePage = () => {
         </div>
       )}
       <div className="input-group-prepend input-text mb-2">
-        Введіть ставку рентної плати за спеціальне використання підземних вод:
+        Введіть ставку рентної плати за спеціальне використання підземних вод (у
+        грн):
       </div>
       <input
         name={"rentRateGWUse"}
@@ -133,7 +205,7 @@ const CostPricePage = () => {
         </div>
       )}
       <div className="input-group-prepend input-text mb-2">
-        Введіть ставку рентної плати за користування надрами:
+        Введіть ставку рентної плати за користування надрами (у %):
       </div>
       <input
         name={"rentRateSubsoilUse"}
@@ -150,11 +222,12 @@ const CostPricePage = () => {
       <ButtonGroup
         handleCancel={handleCancel}
         cancelIsDisabled={cancelIsDisabled}
-        deleteIsDisabled={false}
+        deleteIsDisabled={deleteIsDisabled}
         handleDataIsDisabled={handleDataIsDisabled}
         handleData={handleCalculating}
         handleDataBtnText={"Розрахувати"}
       />
+      <DeleteModal handleDeleteData={handleDeleteData} />
     </div>
   );
 };
