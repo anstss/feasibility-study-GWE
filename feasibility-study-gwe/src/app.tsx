@@ -4,6 +4,7 @@ import "./shared/styles.scss";
 import AnalysisPage from "./components/pages/analysisPage/analysisPage";
 import {
   ANALYSIS_PAGE_ROUTE,
+  COST_PRICE_PAGE_ROUTE,
   DEPRECIATION_PAGE_ROUTE,
   LOCAL_STORAGE_KEY_ANALYSIS,
   LOCAL_STORAGE_KEY_DEPRECIATION,
@@ -13,6 +14,7 @@ import { analysisWaterProductionVolumesSlice } from "./store/reducers/analysisWa
 import { Routes, Route } from "react-router-dom";
 import DepreciationPage from "./components/pages/depreciationPage/depreciationPage";
 import { depreciationChargesCalculationSlice } from "./store/reducers/depreciationChargesCalculationSlice";
+import CostPricePage from "./components/pages/costPricePage/costPricePage";
 
 function App() {
   const dispatch = useAppDispatch();
@@ -43,6 +45,7 @@ function App() {
         <Routes>
           <Route path={ANALYSIS_PAGE_ROUTE} element={AnalysisPage()} />
           <Route path={DEPRECIATION_PAGE_ROUTE} element={DepreciationPage()} />
+          <Route path={COST_PRICE_PAGE_ROUTE} element={CostPricePage()} />
         </Routes>
       </div>
     </div>

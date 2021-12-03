@@ -3,6 +3,7 @@ import "./navbar.scss";
 import { Link } from "react-router-dom";
 import {
   ANALYSIS_PAGE_ROUTE,
+  COST_PRICE_PAGE_ROUTE,
   DEPRECIATION_PAGE_ROUTE,
 } from "../../shared/constants";
 
@@ -58,6 +59,11 @@ const Navbar = () => {
                   <div data-bs-dismiss="offcanvas">
                     Капіталовкладення та амортизаційні витрати
                   </div>
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link to={COST_PRICE_PAGE_ROUTE} className="nav-link">
+                  <div data-bs-dismiss="offcanvas">Собівартість продукції</div>
                 </Link>
               </li>
             </ul>
