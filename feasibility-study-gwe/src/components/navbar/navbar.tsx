@@ -5,6 +5,7 @@ import {
   ANALYSIS_PAGE_ROUTE,
   COST_PRICE_PAGE_ROUTE,
   DEPRECIATION_PAGE_ROUTE,
+  STATIC_PERFORMANCE_INDICATORS_PAGE_ROUTE,
 } from "../../shared/constants";
 
 const Navbar = () => {
@@ -64,6 +65,16 @@ const Navbar = () => {
               <li className="nav-item">
                 <Link to={COST_PRICE_PAGE_ROUTE} className="nav-link">
                   <div data-bs-dismiss="offcanvas">Собівартість продукції</div>
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link
+                  to={STATIC_PERFORMANCE_INDICATORS_PAGE_ROUTE}
+                  className="nav-link"
+                >
+                  <div data-bs-dismiss="offcanvas">
+                    Статичні показники експлуатації
+                  </div>
                 </Link>
               </li>
             </ul>

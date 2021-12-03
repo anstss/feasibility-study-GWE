@@ -2,10 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import ButtonGroup from "../../button-group/buttonGroup";
-import {
-  LOCAL_STORAGE_KEY_COST_PRICE,
-  LOCAL_STORAGE_KEY_DEPRECIATION,
-} from "../../../shared/constants";
+import { LOCAL_STORAGE_KEY_COST_PRICE } from "../../../shared/constants";
 import { useStore } from "react-redux";
 import { useAppDispatch, useAppSelector } from "../../../hooks/redux-hooks";
 import { costPriceSlice } from "../../../store/reducers/costPriceSlice";
