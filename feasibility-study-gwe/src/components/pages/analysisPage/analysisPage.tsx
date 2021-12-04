@@ -1,8 +1,5 @@
 import React, { useEffect, useState } from "react";
-import "./analysisPage.scss";
-import analysisWaterProductionVolumesReducer, {
-  analysisWaterProductionVolumesSlice,
-} from "../../../store/reducers/analysisWaterProductionVolumesSlice";
+import { analysisWaterProductionVolumesSlice } from "../../../store/reducers/analysisWaterProductionVolumesSlice";
 import { useAppDispatch, useAppSelector } from "../../../hooks/redux-hooks";
 import {
   Bar,
@@ -243,7 +240,7 @@ const AnalysisPage = () => {
   return (
     <div>
       <h2 className="fs-4 my-5">Аналіз досягнутих обсягів видобутку води</h2>
-      <div className="input-group-prepend input-text mb-2">
+      <div className="input-group-prepend mb-2">
         Введіть річний обсяг видобутку води (у тис.м³) за необхідну кількість
         останніх років (розділяючи пробілом), всі нечислові значення будуть
         проігноровані:
