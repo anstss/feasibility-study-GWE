@@ -20,6 +20,12 @@ const StaticPerformanceIndicatorsPage = () => {
     grossProfit,
     incomeTax,
     netProfit,
+    workingCapital,
+    productionAssets,
+    profitabilityCostPriceGrossProfit,
+    profitabilityCostPriceNetProfit,
+    profitabilityProductionAssetsGrossProfit,
+    profitabilityProductionAssetsNetProfit,
   } = useAppSelector((state) => state.staticPerformanceIndicatorsReducer);
   const {
     setIncomeTax,
@@ -34,8 +40,18 @@ const StaticPerformanceIndicatorsPage = () => {
     (state) => state.analysisWaterProductionVolumesReducer.statistic
   );
 
-  const { costPerOneSW, operatingCosts, costPrice } = useAppSelector(
-    (state) => state.costPriceReducer
+  const {
+    costPerOneSW,
+    operatingCosts,
+    costPrice,
+    electricityCosts,
+    materialsAndSpareParts,
+    maintenance,
+    laboratoryWorks,
+  } = useAppSelector((state) => state.costPriceReducer);
+
+  const { fixedAssets } = useAppSelector(
+    (state) => state.depreciationChargesCalculationReducer
   );
 
   const formik = useFormik({
@@ -73,12 +89,41 @@ const StaticPerformanceIndicatorsPage = () => {
     const grossProfit = +(totalAnnualCost - operatingCosts).toFixed(2);
     const incomeTax = +((grossProfit / 100) * +incomeTaxPercent).toFixed(2);
     const netProfit = +(grossProfit - incomeTax).toFixed(2);
+    const workingCapital = +(
+      electricityCosts +
+      materialsAndSpareParts +
+      maintenance +
+      laboratoryWorks
+    ).toFixed(2);
+    const productionAssets = +(fixedAssets + workingCapital).toFixed(2);
+    const profitabilityCostPriceGrossProfit = +(
+      (grossProfit / operatingCosts) *
+      100
+    ).toFixed(2);
+    const profitabilityCostPriceNetProfit = +(
+      (netProfit / operatingCosts) *
+      100
+    ).toFixed(2);
+    const profitabilityProductionAssetsGrossProfit = +(
+      (grossProfit / productionAssets) *
+      100
+    ).toFixed(2);
+    const profitabilityProductionAssetsNetProfit = +(
+      (netProfit / productionAssets) *
+      100
+    ).toFixed(2);
     dispatch(
       setStaticPerformanceIndicatorsData({
         totalAnnualCost,
         grossProfit,
         incomeTax,
         netProfit,
+        workingCapital,
+        productionAssets,
+        profitabilityCostPriceGrossProfit,
+        profitabilityCostPriceNetProfit,
+        profitabilityProductionAssetsGrossProfit,
+        profitabilityProductionAssetsNetProfit,
       })
     );
     saveStaticPerformanceIndicatorsToLocalStorage();
@@ -191,6 +236,71 @@ const StaticPerformanceIndicatorsPage = () => {
               <td>Чистий прибуток</td>
               <td>тис.грн</td>
               <td>{netProfit}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <h3 className="fs-5 my-3">
+        Капіталовкладення у виробничі фонди та рентабельність водоспоживання
+      </h3>
+      <div className="table-responsive mt-3">
+        <table className="table table-striped table-hover">
+          <thead>
+            <tr>
+              <th scope="col">№</th>
+              <th scope="col">Показники</th>
+              <th scope="col">Одиниці виміру</th>
+              <th scope="col">Значення</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th colSpan={4}>Капіталовкладення</th>
+            </tr>
+            <tr>
+              <th scope="row">1</th>
+              <td>Основні фонди</td>
+              <td>тис.грн</td>
+              <td>{fixedAssets}</td>
+            </tr>
+            <tr>
+              <th scope="row">2</th>
+              <td>Обігові засоби</td>
+              <td>тис.грн</td>
+              <td>{workingCapital}</td>
+            </tr>
+            <tr>
+              <th scope="row">3</th>
+              <td>Виробничі фонди</td>
+              <td>тис.грн</td>
+              <td>{productionAssets}</td>
+            </tr>
+            <tr>
+              <th colSpan={4}>Рентабельність підприємства</th>
+            </tr>
+            <tr>
+              <th scope="row">4</th>
+              <td>По відношенню до собівартості (валовий прибуток)</td>
+              <td>%</td>
+              <td>{profitabilityCostPriceGrossProfit}</td>
+            </tr>
+            <tr>
+              <th scope="row">5</th>
+              <td>По відношенню до собівартості (чистий прибуток)</td>
+              <td>%</td>
+              <td>{profitabilityCostPriceNetProfit}</td>
+            </tr>
+            <tr>
+              <th scope="row">6</th>
+              <td>По відношенню до виробничих фондів (валовий прибуток)</td>
+              <td>%</td>
+              <td>{profitabilityProductionAssetsGrossProfit}</td>
+            </tr>
+            <tr>
+              <th scope="row">7</th>
+              <td>По відношенню до виробничих фондів (чистий прибуток)</td>
+              <td>%</td>
+              <td>{profitabilityProductionAssetsNetProfit}</td>
             </tr>
           </tbody>
         </table>
