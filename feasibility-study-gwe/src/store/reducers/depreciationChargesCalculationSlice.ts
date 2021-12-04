@@ -10,6 +10,7 @@ interface depreciationChargesCalculationState {
   fixedAssetsCharges: number;
   investments: number;
   investmentsCharges: number;
+  totalExpenses: number;
 }
 
 const initialState: depreciationChargesCalculationState = {
@@ -30,6 +31,7 @@ const initialState: depreciationChargesCalculationState = {
   fixedAssetsCharges: 0,
   investments: 0,
   investmentsCharges: 0,
+  totalExpenses: 0,
 };
 
 export const depreciationChargesCalculationSlice = createSlice({
@@ -73,6 +75,7 @@ export const depreciationChargesCalculationSlice = createSlice({
         fixedAssetsCharges,
         investments,
         investmentsCharges,
+        totalExpenses,
       } = action.payload;
       state.depreciationPercent = depreciationPercent;
       state.expensesAmount = expensesAmount;
@@ -81,6 +84,7 @@ export const depreciationChargesCalculationSlice = createSlice({
       state.fixedAssetsCharges = fixedAssetsCharges;
       state.investments = investments;
       state.investmentsCharges = investmentsCharges;
+      state.totalExpenses = totalExpenses;
     },
     clearDataDepreciation(state) {
       const {
@@ -91,6 +95,7 @@ export const depreciationChargesCalculationSlice = createSlice({
         fixedAssetsCharges,
         investments,
         investmentsCharges,
+        totalExpenses,
       } = initialState;
       state.depreciationPercent = depreciationPercent;
       state.expensesAmount = expensesAmount;
@@ -99,6 +104,10 @@ export const depreciationChargesCalculationSlice = createSlice({
       state.fixedAssetsCharges = fixedAssetsCharges;
       state.investments = investments;
       state.investmentsCharges = investmentsCharges;
+      state.totalExpenses = totalExpenses;
+    },
+    setTotalExpensesToState(state, action: PayloadAction<number>) {
+      state.totalExpenses = action.payload;
     },
   },
 });

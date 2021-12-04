@@ -12,6 +12,8 @@ interface staticPerformanceIndicatorsState {
   profitabilityCostPriceNetProfit: number;
   profitabilityProductionAssetsGrossProfit: number;
   profitabilityProductionAssetsNetProfit: number;
+  paybackPeriod: number;
+  subsoilOwnerIncome: number;
 }
 
 type StaticPerformanceIndicatorsData = {
@@ -25,6 +27,8 @@ type StaticPerformanceIndicatorsData = {
   profitabilityCostPriceNetProfit: number;
   profitabilityProductionAssetsGrossProfit: number;
   profitabilityProductionAssetsNetProfit: number;
+  paybackPeriod: number;
+  subsoilOwnerIncome: number;
 };
 
 const initialState: staticPerformanceIndicatorsState = {
@@ -39,6 +43,8 @@ const initialState: staticPerformanceIndicatorsState = {
   profitabilityCostPriceNetProfit: 0,
   profitabilityProductionAssetsGrossProfit: 0,
   profitabilityProductionAssetsNetProfit: 0,
+  paybackPeriod: 0,
+  subsoilOwnerIncome: 0,
 };
 
 export const staticPerformanceIndicatorsSlice = createSlice({
@@ -61,6 +67,8 @@ export const staticPerformanceIndicatorsSlice = createSlice({
         profitabilityCostPriceNetProfit,
         profitabilityProductionAssetsGrossProfit,
         profitabilityProductionAssetsNetProfit,
+        paybackPeriod,
+        subsoilOwnerIncome,
       } = initialState;
       state.incomeTaxPercent = incomeTaxPercent;
       state.totalAnnualCost = totalAnnualCost;
@@ -76,6 +84,8 @@ export const staticPerformanceIndicatorsSlice = createSlice({
         profitabilityProductionAssetsGrossProfit;
       state.profitabilityProductionAssetsNetProfit =
         profitabilityProductionAssetsNetProfit;
+      state.paybackPeriod = paybackPeriod;
+      state.subsoilOwnerIncome = subsoilOwnerIncome;
     },
     setStaticPerformanceIndicatorsData(
       state,
@@ -92,6 +102,8 @@ export const staticPerformanceIndicatorsSlice = createSlice({
         profitabilityCostPriceNetProfit,
         profitabilityProductionAssetsGrossProfit,
         profitabilityProductionAssetsNetProfit,
+        paybackPeriod,
+        subsoilOwnerIncome,
       } = action.payload;
       state.totalAnnualCost = totalAnnualCost;
       state.grossProfit = grossProfit;
@@ -106,6 +118,8 @@ export const staticPerformanceIndicatorsSlice = createSlice({
         profitabilityProductionAssetsGrossProfit;
       state.profitabilityProductionAssetsNetProfit =
         profitabilityProductionAssetsNetProfit;
+      state.paybackPeriod = paybackPeriod;
+      state.subsoilOwnerIncome = subsoilOwnerIncome;
     },
     setStaticPerformanceIndicatorsDataFromLocalStorage(
       state,
@@ -123,6 +137,8 @@ export const staticPerformanceIndicatorsSlice = createSlice({
         profitabilityCostPriceNetProfit,
         profitabilityProductionAssetsGrossProfit,
         profitabilityProductionAssetsNetProfit,
+        paybackPeriod,
+        subsoilOwnerIncome,
       } = action.payload;
       state.incomeTaxPercent = incomeTaxPercent;
       state.totalAnnualCost = totalAnnualCost;
@@ -138,6 +154,8 @@ export const staticPerformanceIndicatorsSlice = createSlice({
         profitabilityProductionAssetsGrossProfit;
       state.profitabilityProductionAssetsNetProfit =
         profitabilityProductionAssetsNetProfit;
+      state.paybackPeriod = paybackPeriod;
+      state.subsoilOwnerIncome = subsoilOwnerIncome;
     },
   },
 });

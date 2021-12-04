@@ -122,6 +122,7 @@ const DepreciationPage = () => {
     setFixedAssetsAndCharges,
     setInvestmentsAndCharges,
     clearDataDepreciation,
+    setTotalExpensesToState,
   } = depreciationChargesCalculationSlice.actions;
 
   const formik = useFormik({
@@ -217,6 +218,7 @@ const DepreciationPage = () => {
         investmentsCharges,
       })
     );
+    dispatch(setTotalExpensesToState(+totalExpenses.toFixed(2)));
     saveDepreciationDataToLocalStorage();
   };
 

@@ -26,6 +26,8 @@ const StaticPerformanceIndicatorsPage = () => {
     profitabilityCostPriceNetProfit,
     profitabilityProductionAssetsGrossProfit,
     profitabilityProductionAssetsNetProfit,
+    paybackPeriod,
+    subsoilOwnerIncome,
   } = useAppSelector((state) => state.staticPerformanceIndicatorsReducer);
   const {
     setIncomeTax,
@@ -48,9 +50,11 @@ const StaticPerformanceIndicatorsPage = () => {
     materialsAndSpareParts,
     maintenance,
     laboratoryWorks,
+    rentGWUse,
+    rentSubsoilUse,
   } = useAppSelector((state) => state.costPriceReducer);
 
-  const { fixedAssets } = useAppSelector(
+  const { fixedAssets, totalExpenses } = useAppSelector(
     (state) => state.depreciationChargesCalculationReducer
   );
 
@@ -112,6 +116,14 @@ const StaticPerformanceIndicatorsPage = () => {
       (netProfit / productionAssets) *
       100
     ).toFixed(2);
+    const paybackPeriod = +((fixedAssets + totalExpenses) / netProfit).toFixed(
+      2
+    );
+    const subsoilOwnerIncome = +(
+      rentGWUse +
+      rentSubsoilUse +
+      incomeTax
+    ).toFixed(2);
     dispatch(
       setStaticPerformanceIndicatorsData({
         totalAnnualCost,
@@ -124,6 +136,8 @@ const StaticPerformanceIndicatorsPage = () => {
         profitabilityCostPriceNetProfit,
         profitabilityProductionAssetsGrossProfit,
         profitabilityProductionAssetsNetProfit,
+        paybackPeriod,
+        subsoilOwnerIncome,
       })
     );
     saveStaticPerformanceIndicatorsToLocalStorage();
@@ -241,7 +255,8 @@ const StaticPerformanceIndicatorsPage = () => {
         </table>
       </div>
       <h3 className="fs-5 my-3">
-        Капіталовкладення у виробничі фонди та рентабельність водоспоживання
+        Капіталовкладення у виробничі фонди та рентабельність водоспоживання.
+        Окупність капіталовкладень. Дохід власника надр
       </h3>
       <div className="table-responsive mt-3">
         <table className="table table-striped table-hover">
@@ -301,6 +316,20 @@ const StaticPerformanceIndicatorsPage = () => {
               <td>По відношенню до виробничих фондів (чистий прибуток)</td>
               <td>%</td>
               <td>{profitabilityProductionAssetsNetProfit}</td>
+            </tr>
+            <tr>
+              <th scope="row" colSpan={2}>
+                Строк окупності капіталовкладень
+              </th>
+              <td>роки</td>
+              <td>{paybackPeriod}</td>
+            </tr>
+            <tr>
+              <th scope="row" colSpan={2}>
+                Дохід власника надр
+              </th>
+              <td>тис.грн</td>
+              <td>{subsoilOwnerIncome}</td>
             </tr>
           </tbody>
         </table>
