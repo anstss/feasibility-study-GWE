@@ -9,7 +9,9 @@ import {
   LOCAL_STORAGE_KEY_ANALYSIS,
   LOCAL_STORAGE_KEY_COST_PRICE,
   LOCAL_STORAGE_KEY_DEPRECIATION,
+  LOCAL_STORAGE_KEY_MIN_COST_EFFECTIVE_POWER,
   LOCAL_STORAGE_KEY_STATIC_PERFORMANCE_INDICATORS,
+  MIN_COST_EFFECTIVE_POWER_PAGE_ROUTE,
   STATIC_PERFORMANCE_INDICATORS_PAGE_ROUTE,
 } from "./shared/constants";
 import { useAppDispatch } from "./hooks/redux-hooks";
@@ -21,6 +23,8 @@ import CostPricePage from "./components/pages/costPricePage/costPricePage";
 import { costPriceSlice } from "./store/reducers/costPriceSlice";
 import StaticPerformanceIndicatorsPage from "./components/pages/staticPerformanceIndicatorsPage/staticPerformanceIndicatorsPage";
 import { staticPerformanceIndicatorsSlice } from "./store/reducers/staticPerformanceIndicatorsSlice";
+import MinCostEffectivePower from "./components/pages/minCostEffectivePower/minCostEffectivePower";
+import { minCostEffectivePowerSlice } from "./store/reducers/minCostEffectivePower";
 
 function App() {
   const dispatch = useAppDispatch();
@@ -31,6 +35,7 @@ function App() {
   const { setCostPriceData } = costPriceSlice.actions;
   const { setStaticPerformanceIndicatorsDataFromLocalStorage } =
     staticPerformanceIndicatorsSlice.actions;
+  const { setMinCostEffectivePowerData } = minCostEffectivePowerSlice.actions;
 
   useEffect(() => {
     const analysisData = localStorage.getItem(LOCAL_STORAGE_KEY_ANALYSIS);
@@ -59,6 +64,14 @@ function App() {
         )
       );
     }
+    const minCostEffectivePowerData = localStorage.getItem(
+      LOCAL_STORAGE_KEY_MIN_COST_EFFECTIVE_POWER
+    );
+    if (minCostEffectivePowerData) {
+      dispatch(
+        setMinCostEffectivePowerData(JSON.parse(minCostEffectivePowerData))
+      );
+    }
   }, []);
 
   return (
@@ -72,6 +85,10 @@ function App() {
           <Route
             path={STATIC_PERFORMANCE_INDICATORS_PAGE_ROUTE}
             element={StaticPerformanceIndicatorsPage()}
+          />
+          <Route
+            path={MIN_COST_EFFECTIVE_POWER_PAGE_ROUTE}
+            element={MinCostEffectivePower()}
           />
         </Routes>
       </div>

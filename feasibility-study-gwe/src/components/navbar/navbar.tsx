@@ -5,6 +5,7 @@ import {
   ANALYSIS_PAGE_ROUTE,
   COST_PRICE_PAGE_ROUTE,
   DEPRECIATION_PAGE_ROUTE,
+  MIN_COST_EFFECTIVE_POWER_PAGE_ROUTE,
   STATIC_PERFORMANCE_INDICATORS_PAGE_ROUTE,
 } from "../../shared/constants";
 
@@ -74,6 +75,16 @@ const Navbar = () => {
                 >
                   <div data-bs-dismiss="offcanvas">
                     Статичні показники експлуатації
+                  </div>
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link
+                  to={MIN_COST_EFFECTIVE_POWER_PAGE_ROUTE}
+                  className="nav-link"
+                >
+                  <div data-bs-dismiss="offcanvas">
+                    Мінімальна рентабельна потужність
                   </div>
                 </Link>
               </li>
