@@ -14,12 +14,18 @@ import {
   Scatter,
   ResponsiveContainer,
 } from "recharts";
+import { intersect } from "../../../shared/helpers";
 
 type ChartDataElementScatter = {
   productionVolume: number;
   redCFC: number;
   blueOC: number;
   greenGP: number;
+};
+
+type ChartDataElementBreakEvenScatter = {
+  productionVolume: number;
+  intersection: number;
 };
 
 type ChartDataElementLineConditionalFixedCosts = {
@@ -43,7 +49,7 @@ const MinCostEffectivePower = () => {
   );
   const { costPrice, conditionalFixedCosts, variableCosts, operatingCosts } =
     useAppSelector((state) => state.costPriceReducer);
-  const { grossProfit, totalAnnualCost } = useAppSelector(
+  const { totalAnnualCost } = useAppSelector(
     (state) => state.staticPerformanceIndicatorsReducer
   );
   const {
@@ -111,8 +117,13 @@ const MinCostEffectivePower = () => {
       | ChartDataElementLineConditionalFixedCosts
       | ChartDataElementLineOperatingCosts
       | ChartDataElementLineGrossProfit
+      | ChartDataElementBreakEvenScatter
     )[]
   >([]);
+
+  const [intersection, setIntersection] = useState<
+    false | { x: number; y: number }
+  >(false);
 
   useEffect(() => {
     const data = [
@@ -143,7 +154,29 @@ const MinCostEffectivePower = () => {
         productionVolume: averageAnnualProjectedWaterProductionWithLosses,
         grossProfit: totalAnnualCost,
       },
+      {
+        productionVolume: 0,
+        intersection: 0,
+      },
     ];
+    const intersection = intersect(
+      0,
+      conditionalFixedCosts,
+      averageAnnualProjectedWaterProductionWithLosses,
+      operatingCosts,
+      0,
+      0,
+      averageAnnualProjectedWaterProductionWithLosses,
+      totalAnnualCost
+    );
+    setIntersection(intersection);
+    data.pop();
+    if (intersection) {
+      data.push({
+        productionVolume: +intersection.x.toFixed(2),
+        intersection: +intersection.y.toFixed(2),
+      });
+    }
     setChartData(data);
   }, [
     conditionalFixedCosts,
@@ -267,6 +300,13 @@ const MinCostEffectivePower = () => {
             fill="green"
             legendType="none"
           />
+          {intersection ? (
+            <Scatter
+              name="Точка беззбитковості"
+              dataKey="intersection"
+              fill="#fc00ff"
+            />
+          ) : null}
           <Line
             name="Загальні витрати (валові)"
             dataKey="operatingCosts"
