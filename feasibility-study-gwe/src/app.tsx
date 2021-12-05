@@ -10,8 +10,10 @@ import {
   LOCAL_STORAGE_KEY_COST_PRICE,
   LOCAL_STORAGE_KEY_DEPRECIATION,
   LOCAL_STORAGE_KEY_MIN_COST_EFFECTIVE_POWER,
+  LOCAL_STORAGE_KEY_NET_DISCOUNTED_CASH_FLOW,
   LOCAL_STORAGE_KEY_STATIC_PERFORMANCE_INDICATORS,
   MIN_COST_EFFECTIVE_POWER_PAGE_ROUTE,
+  NET_DISCOUNTED_CASH_FLOW_PAGE_ROUTE,
   STATIC_PERFORMANCE_INDICATORS_PAGE_ROUTE,
 } from "./shared/constants";
 import { useAppDispatch } from "./hooks/redux-hooks";
@@ -25,6 +27,8 @@ import StaticPerformanceIndicatorsPage from "./components/pages/staticPerformanc
 import { staticPerformanceIndicatorsSlice } from "./store/reducers/staticPerformanceIndicatorsSlice";
 import MinCostEffectivePower from "./components/pages/minCostEffectivePower/minCostEffectivePower";
 import { minCostEffectivePowerSlice } from "./store/reducers/minCostEffectivePower";
+import NetDiscountedCashFlow from "./components/pages/netDiscountedCashFlow/netDiscountedCashFlow";
+import { netDiscountedCashFlowSlice } from "./store/reducers/netDiscountedCashFlowSlice";
 
 function App() {
   const dispatch = useAppDispatch();
@@ -36,6 +40,7 @@ function App() {
   const { setStaticPerformanceIndicatorsDataFromLocalStorage } =
     staticPerformanceIndicatorsSlice.actions;
   const { setMinCostEffectivePowerData } = minCostEffectivePowerSlice.actions;
+  const { setNetDiscountedCashFlowData } = netDiscountedCashFlowSlice.actions;
 
   useEffect(() => {
     const analysisData = localStorage.getItem(LOCAL_STORAGE_KEY_ANALYSIS);
@@ -72,6 +77,14 @@ function App() {
         setMinCostEffectivePowerData(JSON.parse(minCostEffectivePowerData))
       );
     }
+    const netDiscountedCashFlowData = localStorage.getItem(
+      LOCAL_STORAGE_KEY_NET_DISCOUNTED_CASH_FLOW
+    );
+    if (netDiscountedCashFlowData) {
+      dispatch(
+        setNetDiscountedCashFlowData(JSON.parse(netDiscountedCashFlowData))
+      );
+    }
   }, []);
 
   return (
@@ -89,6 +102,10 @@ function App() {
           <Route
             path={MIN_COST_EFFECTIVE_POWER_PAGE_ROUTE}
             element={MinCostEffectivePower()}
+          />
+          <Route
+            path={NET_DISCOUNTED_CASH_FLOW_PAGE_ROUTE}
+            element={NetDiscountedCashFlow()}
           />
         </Routes>
       </div>

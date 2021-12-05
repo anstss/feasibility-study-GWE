@@ -36,3 +36,12 @@ export const intersect = (
 
   return { x, y };
 };
+
+export const transformStringToNumberArray = (str: string): number[] => {
+  const data: number[] = str
+    .replaceAll(",", ".")
+    .split(" ")
+    .filter((el) => !isNaN(+el))
+    .map((el) => +el);
+  return data;
+};

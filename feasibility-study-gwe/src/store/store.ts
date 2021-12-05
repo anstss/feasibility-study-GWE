@@ -5,6 +5,7 @@ import depreciationChargesCalculationReducer from "./reducers/depreciationCharge
 import costPriceReducer from "./reducers/costPriceSlice";
 import staticPerformanceIndicatorsReducer from "./reducers/staticPerformanceIndicatorsSlice";
 import minCostEffectivePowerSliceReducer from "./reducers/minCostEffectivePower";
+import netDiscountedCashFlowReducer from "./reducers/netDiscountedCashFlowSlice";
 
 const rootReducer = combineReducers({
   analysisWaterProductionVolumesReducer,
@@ -12,6 +13,7 @@ const rootReducer = combineReducers({
   costPriceReducer,
   staticPerformanceIndicatorsReducer,
   minCostEffectivePowerSliceReducer,
+  netDiscountedCashFlowReducer,
 });
 
 export const setupStore = () => {

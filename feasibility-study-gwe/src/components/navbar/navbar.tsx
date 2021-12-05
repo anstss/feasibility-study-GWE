@@ -6,6 +6,7 @@ import {
   COST_PRICE_PAGE_ROUTE,
   DEPRECIATION_PAGE_ROUTE,
   MIN_COST_EFFECTIVE_POWER_PAGE_ROUTE,
+  NET_DISCOUNTED_CASH_FLOW_PAGE_ROUTE,
   STATIC_PERFORMANCE_INDICATORS_PAGE_ROUTE,
 } from "../../shared/constants";
 
@@ -85,6 +86,16 @@ const Navbar = () => {
                 >
                   <div data-bs-dismiss="offcanvas">
                     Мінімальна рентабельна потужність
+                  </div>
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link
+                  to={NET_DISCOUNTED_CASH_FLOW_PAGE_ROUTE}
+                  className="nav-link"
+                >
+                  <div data-bs-dismiss="offcanvas">
+                    Чистий дисконтований грошовий потік
                   </div>
                 </Link>
               </li>

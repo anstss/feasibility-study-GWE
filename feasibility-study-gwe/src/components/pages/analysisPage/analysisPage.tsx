@@ -16,6 +16,7 @@ import { LOCAL_STORAGE_KEY_ANALYSIS } from "../../../shared/constants";
 import { useStore } from "react-redux";
 import ButtonGroup from "../../button-group/buttonGroup";
 import DeleteModal from "../../delete-modal/deleteModal";
+import { transformStringToNumberArray } from "../../../shared/helpers";
 
 type ChartDataElement = {
   year: number;
@@ -79,11 +80,7 @@ const AnalysisPage = () => {
   };
 
   const handleAnalyses = () => {
-    const data: number[] = waterExtractionsData
-      .replaceAll(",", ".")
-      .split(" ")
-      .filter((el) => !isNaN(+el))
-      .map((el) => +el);
+    const data: number[] = transformStringToNumberArray(waterExtractionsData);
     dispatch(setAnnualWaterWithdrawalData(data));
     if (!isNaN(+limitProdVolumes)) {
       dispatch(setLimitedProductionVolumes(+limitProdVolumes));
