@@ -1,15 +1,50 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../hooks/redux-hooks";
 import { minCostEffectivePowerSlice } from "../../../store/reducers/minCostEffectivePower";
 import { useStore } from "react-redux";
 import { LOCAL_STORAGE_KEY_MIN_COST_EFFECTIVE_POWER } from "../../../shared/constants";
+import {
+  ComposedChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  Scatter,
+  ResponsiveContainer,
+} from "recharts";
+
+type ChartDataElementScatter = {
+  productionVolume: number;
+  redCFC: number;
+  blueOC: number;
+  greenGP: number;
+};
+
+type ChartDataElementLineConditionalFixedCosts = {
+  productionVolume: number;
+  conditionalFixedCosts: number;
+};
+
+type ChartDataElementLineOperatingCosts = {
+  productionVolume: number;
+  operatingCosts: number;
+};
+
+type ChartDataElementLineGrossProfit = {
+  productionVolume: number;
+  grossProfit: number;
+};
 
 const MinCostEffectivePower = () => {
   const { averageAnnualProjectedWaterProductionWithLosses } = useAppSelector(
     (state) => state.analysisWaterProductionVolumesReducer.statistic
   );
-  const { costPrice, conditionalFixedCosts, variableCosts } = useAppSelector(
-    (state) => state.costPriceReducer
+  const { costPrice, conditionalFixedCosts, variableCosts, operatingCosts } =
+    useAppSelector((state) => state.costPriceReducer);
+  const { grossProfit, totalAnnualCost } = useAppSelector(
+    (state) => state.staticPerformanceIndicatorsReducer
   );
   const {
     specificVariableCosts,
@@ -69,6 +104,53 @@ const MinCostEffectivePower = () => {
   useEffect(() => {
     calculateMinCostEffectivePower();
   }, [variableCosts, averageAnnualProjectedWaterProductionWithLosses]);
+
+  const [chartData, setChartData] = useState<
+    (
+      | ChartDataElementScatter
+      | ChartDataElementLineConditionalFixedCosts
+      | ChartDataElementLineOperatingCosts
+      | ChartDataElementLineGrossProfit
+    )[]
+  >([]);
+
+  useEffect(() => {
+    const data = [
+      {
+        productionVolume: 0,
+        redCFC: conditionalFixedCosts,
+        blueOC: conditionalFixedCosts,
+        greenGP: 0,
+      },
+      {
+        productionVolume: averageAnnualProjectedWaterProductionWithLosses,
+        redCFC: conditionalFixedCosts,
+        blueOC: operatingCosts,
+        greenGP: totalAnnualCost,
+      },
+      { productionVolume: 0, conditionalFixedCosts },
+      {
+        productionVolume: averageAnnualProjectedWaterProductionWithLosses,
+        conditionalFixedCosts,
+      },
+      { productionVolume: 0, operatingCosts: conditionalFixedCosts },
+      {
+        productionVolume: averageAnnualProjectedWaterProductionWithLosses,
+        operatingCosts,
+      },
+      { productionVolume: 0, grossProfit: 0 },
+      {
+        productionVolume: averageAnnualProjectedWaterProductionWithLosses,
+        grossProfit: totalAnnualCost,
+      },
+    ];
+    setChartData(data);
+  }, [
+    conditionalFixedCosts,
+    averageAnnualProjectedWaterProductionWithLosses,
+    operatingCosts,
+    totalAnnualCost,
+  ]);
 
   return (
     <div>
@@ -131,6 +213,83 @@ const MinCostEffectivePower = () => {
           </tbody>
         </table>
       </div>
+      <h4 className="card-title text-center my-3">
+        Визначення точки беззбитковості
+      </h4>
+      <ResponsiveContainer width="100%" height={500}>
+        <ComposedChart
+          width={500}
+          height={400}
+          data={chartData}
+          margin={{
+            top: 20,
+            right: 80,
+            bottom: 60,
+            left: 20,
+          }}
+        >
+          <CartesianGrid stroke="#f5f5f5" />
+          <Tooltip />
+          <Legend verticalAlign={"top"} />
+          <XAxis
+            dataKey="productionVolume"
+            type="number"
+            label={{
+              value: "Обсяг видобутку, тис.м³",
+              position: "bottom",
+              offset: 5,
+            }}
+          />
+          <YAxis
+            type="number"
+            label={{
+              value: "Доходи та витрати, тис.грн",
+              angle: -90,
+              position: "left",
+              offset: 10,
+            }}
+          />
+          <Scatter
+            name="Умовно-постійні витрати"
+            dataKey="redCFC"
+            fill="red"
+            legendType="none"
+          />
+          <Scatter
+            name="Загальні витрати (валові)"
+            dataKey="blueOC"
+            fill="blue"
+            legendType="none"
+          />
+          <Scatter
+            name="Валовий дохід підприємства"
+            dataKey="greenGP"
+            fill="green"
+            legendType="none"
+          />
+          <Line
+            name="Загальні витрати (валові)"
+            dataKey="operatingCosts"
+            stroke="blue"
+            dot={false}
+            activeDot={false}
+          />
+          <Line
+            name="Умовно-постійні витрати"
+            dataKey="conditionalFixedCosts"
+            stroke="red"
+            dot={false}
+            activeDot={false}
+          />
+          <Line
+            name="Валовий дохід підприємства"
+            dataKey="grossProfit"
+            stroke="green"
+            dot={false}
+            activeDot={false}
+          />
+        </ComposedChart>
+      </ResponsiveContainer>
     </div>
   );
 };
