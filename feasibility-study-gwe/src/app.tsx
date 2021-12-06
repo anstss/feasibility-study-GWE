@@ -10,6 +10,7 @@ import {
   LOCAL_STORAGE_KEY_ANALYSIS,
   LOCAL_STORAGE_KEY_COST_PRICE,
   LOCAL_STORAGE_KEY_DEPRECIATION,
+  LOCAL_STORAGE_KEY_INTERNAL_RATE_OF_RETURN,
   LOCAL_STORAGE_KEY_MIN_COST_EFFECTIVE_POWER,
   LOCAL_STORAGE_KEY_NET_DISCOUNTED_CASH_FLOW,
   LOCAL_STORAGE_KEY_STATIC_PERFORMANCE_INDICATORS,
@@ -31,6 +32,7 @@ import { minCostEffectivePowerSlice } from "./store/reducers/minCostEffectivePow
 import NetDiscountedCashFlow from "./components/pages/netDiscountedCashFlow/netDiscountedCashFlow";
 import { netDiscountedCashFlowSlice } from "./store/reducers/netDiscountedCashFlowSlice";
 import InternalRateOfReturn from "./components/pages/internalRateOfReturnPage/internalRateOfReturn";
+import { internalRateOfReturnSlice } from "./store/reducers/internalRateOfReturnSlice";
 
 function App() {
   const dispatch = useAppDispatch();
@@ -43,6 +45,7 @@ function App() {
     staticPerformanceIndicatorsSlice.actions;
   const { setMinCostEffectivePowerData } = minCostEffectivePowerSlice.actions;
   const { setNetDiscountedCashFlowData } = netDiscountedCashFlowSlice.actions;
+  const { setInternalRateOfReturnData } = internalRateOfReturnSlice.actions;
 
   useEffect(() => {
     const analysisData = localStorage.getItem(LOCAL_STORAGE_KEY_ANALYSIS);
@@ -85,6 +88,14 @@ function App() {
     if (netDiscountedCashFlowData) {
       dispatch(
         setNetDiscountedCashFlowData(JSON.parse(netDiscountedCashFlowData))
+      );
+    }
+    const internalRateOfReturnData = localStorage.getItem(
+      LOCAL_STORAGE_KEY_INTERNAL_RATE_OF_RETURN
+    );
+    if (internalRateOfReturnData) {
+      dispatch(
+        setInternalRateOfReturnData(JSON.parse(internalRateOfReturnData))
       );
     }
   }, []);
