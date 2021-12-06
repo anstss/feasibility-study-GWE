@@ -9,6 +9,7 @@ import { netDiscountedCashFlowSlice } from "../../../store/reducers/netDiscounte
 import { transformStringToNumberArray } from "../../../shared/helpers";
 import INetDiscountedCashFlowItem from "../../../Types/INetDiscountedCashFlowItem";
 import { useStore } from "react-redux";
+import INetDiscountedCashFlowStatisticItem from "../../../Types/INetDiscountedCashFlowStatisticItem";
 
 const NetDiscountedCashFlowSchema = Yup.object().shape({
   discountRate: Yup.number().typeError("Введіть число"),
@@ -16,13 +17,18 @@ const NetDiscountedCashFlowSchema = Yup.object().shape({
 
 const NetDiscountedCashFlow = () => {
   const dispatch = useAppDispatch();
-  const { clearNetDiscountedCashFlowData, setNetDiscountedCashFlowData } =
-    netDiscountedCashFlowSlice.actions;
+  const {
+    clearNetDiscountedCashFlowData,
+    setNetDiscountedCashFlowData,
+    setNetDiscountedCashFlowStatistic,
+    setNetDiscountedCashFlowAdditionalStatistic,
+  } = netDiscountedCashFlowSlice.actions;
 
   const {
     discountRate,
     futureInvestmentsForYears,
     netDiscountedCashFlowByDiscountRate,
+    netDiscountedCashFlowStatistic,
   } = useAppSelector((state) => state.netDiscountedCashFlowReducer);
   const { netProfit } = useAppSelector(
     (state) => state.staticPerformanceIndicatorsReducer
@@ -72,14 +78,127 @@ const NetDiscountedCashFlow = () => {
         +discountRate,
         futureInvestmentsForYears
       );
+    const netDiscountedCashFlowByDiscountRateStatistic =
+      createNetDiscountedCashFlowStatistic(
+        +discountRate,
+        netDiscountedCashFlowByDiscountRate
+      );
+    const additionalNetDiscountedCashFlowStatistic: INetDiscountedCashFlowStatisticItem[] =
+      getAdditionalNetDiscountedCashFlowStatistic();
+    dispatch(
+      setNetDiscountedCashFlowStatistic(
+        netDiscountedCashFlowByDiscountRateStatistic
+      )
+    );
+    dispatch(
+      setNetDiscountedCashFlowAdditionalStatistic(
+        additionalNetDiscountedCashFlowStatistic
+      )
+    );
     dispatch(
       setNetDiscountedCashFlowData({
         discountRate: +discountRate,
         futureInvestmentsForYears,
         netDiscountedCashFlowByDiscountRate,
+        netDiscountedCashFlowStatistic:
+          netDiscountedCashFlowByDiscountRateStatistic,
+        netDiscountedCashFlowAdditionalStatistic:
+          additionalNetDiscountedCashFlowStatistic,
       })
     );
     saveNetDiscountedCashFlowDataToLocalStorage();
+  };
+
+  const getAdditionalNetDiscountedCashFlowStatistic =
+    (): INetDiscountedCashFlowStatisticItem[] => {
+      const netDiscountedCashFlowZeroRate =
+        calculateNetDiscountedCashFlowByDiscountRate(
+          0,
+          futureInvestmentsForYears
+        );
+      const netDiscountedCashFlowZeroRateStatistic =
+        createNetDiscountedCashFlowStatistic(0, netDiscountedCashFlowZeroRate);
+      const netDiscountedCashFlowQuarterRate =
+        calculateNetDiscountedCashFlowByDiscountRate(
+          25,
+          futureInvestmentsForYears
+        );
+      const netDiscountedCashFlowQuarterStatistic =
+        createNetDiscountedCashFlowStatistic(
+          25,
+          netDiscountedCashFlowQuarterRate
+        );
+      const netDiscountedCashFlowHalfRate =
+        calculateNetDiscountedCashFlowByDiscountRate(
+          50,
+          futureInvestmentsForYears
+        );
+      const netDiscountedCashFlowHalfStatistic =
+        createNetDiscountedCashFlowStatistic(50, netDiscountedCashFlowHalfRate);
+      const netDiscountedCashFlowThreeQuartersRate =
+        calculateNetDiscountedCashFlowByDiscountRate(
+          75,
+          futureInvestmentsForYears
+        );
+      const netDiscountedCashFlowThreeQuartersStatistic =
+        createNetDiscountedCashFlowStatistic(
+          75,
+          netDiscountedCashFlowThreeQuartersRate
+        );
+      const netDiscountedCashFlowFullRate =
+        calculateNetDiscountedCashFlowByDiscountRate(
+          100,
+          futureInvestmentsForYears
+        );
+      const netDiscountedCashFlowFullStatistic =
+        createNetDiscountedCashFlowStatistic(
+          100,
+          netDiscountedCashFlowFullRate
+        );
+      return [
+        netDiscountedCashFlowZeroRateStatistic,
+        netDiscountedCashFlowQuarterStatistic,
+        netDiscountedCashFlowHalfStatistic,
+        netDiscountedCashFlowThreeQuartersStatistic,
+        netDiscountedCashFlowFullStatistic,
+      ];
+    };
+
+  const createNetDiscountedCashFlowStatistic = (
+    rate: number,
+    data: INetDiscountedCashFlowItem[]
+  ): INetDiscountedCashFlowStatisticItem => {
+    const statistic: INetDiscountedCashFlowItem = data.reduce(
+      (
+        prev: INetDiscountedCashFlowItem,
+        current: INetDiscountedCashFlowItem
+      ): INetDiscountedCashFlowItem => {
+        return {
+          year: 0,
+          netProfit: +(prev.netProfit + current.netProfit).toFixed(2),
+          depreciation: +(prev.depreciation + current.depreciation).toFixed(2),
+          profit: +(prev.profit + current.profit).toFixed(2),
+          investments: +(prev.investments + current.investments).toFixed(2),
+          cashFlow: +(prev.cashFlow + current.cashFlow).toFixed(2),
+          discountCoefficient: 0,
+          discountedCashFlow: +(
+            prev.discountedCashFlow + current.discountedCashFlow
+          ).toFixed(2),
+          netDiscountedCashIncome: 0,
+          discountedIncome: +(
+            prev.discountedIncome + current.discountedIncome
+          ).toFixed(2),
+          discountedCapitalInvestment: +(
+            prev.discountedCapitalInvestment +
+            current.discountedCapitalInvestment
+          ).toFixed(2),
+        };
+      }
+    );
+    return {
+      rate,
+      statistic,
+    };
   };
 
   const store = useStore();
@@ -251,6 +370,37 @@ const NetDiscountedCashFlow = () => {
                   </tr>
                 );
               })}
+              {netDiscountedCashFlowStatistic ? (
+                <tr>
+                  <th>Разом</th>
+                  <th>{netDiscountedCashFlowStatistic.statistic.netProfit}</th>
+                  <th>
+                    {netDiscountedCashFlowStatistic.statistic.depreciation}
+                  </th>
+                  <th>{netDiscountedCashFlowStatistic.statistic.profit}</th>
+                  <th>
+                    {netDiscountedCashFlowStatistic.statistic.investments}
+                  </th>
+                  <th>{netDiscountedCashFlowStatistic.statistic.cashFlow}</th>
+                  <th></th>
+                  <th>
+                    {
+                      netDiscountedCashFlowStatistic.statistic
+                        .discountedCashFlow
+                    }
+                  </th>
+                  <th></th>
+                  <th>
+                    {netDiscountedCashFlowStatistic.statistic.discountedIncome}
+                  </th>
+                  <th>
+                    {
+                      netDiscountedCashFlowStatistic.statistic
+                        .discountedCapitalInvestment
+                    }
+                  </th>
+                </tr>
+              ) : null}
             </tbody>
           </table>
         </div>
