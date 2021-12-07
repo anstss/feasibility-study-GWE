@@ -6,6 +6,7 @@ import {
   COST_PRICE_PAGE_ROUTE,
   DEPRECIATION_PAGE_ROUTE,
   INTERNAL_RATE_OF_RETURN_PAGE_ROUTE,
+  LIFE_CYCLE_PAGE_ROUTE,
   MIN_COST_EFFECTIVE_POWER_PAGE_ROUTE,
   NET_DISCOUNTED_CASH_FLOW_PAGE_ROUTE,
   STATIC_PERFORMANCE_INDICATORS_PAGE_ROUTE,
@@ -107,6 +108,13 @@ const Navbar = () => {
                 >
                   <div data-bs-dismiss="offcanvas">
                     Внутрішня норма прибутковості
+                  </div>
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link to={LIFE_CYCLE_PAGE_ROUTE} className="nav-link">
+                  <div data-bs-dismiss="offcanvas">
+                    Життєвий цикл прогнозної експлуатації
                   </div>
                 </Link>
               </li>

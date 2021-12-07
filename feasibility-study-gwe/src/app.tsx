@@ -7,6 +7,7 @@ import {
   COST_PRICE_PAGE_ROUTE,
   DEPRECIATION_PAGE_ROUTE,
   INTERNAL_RATE_OF_RETURN_PAGE_ROUTE,
+  LIFE_CYCLE_PAGE_ROUTE,
   LOCAL_STORAGE_KEY_ANALYSIS,
   LOCAL_STORAGE_KEY_COST_PRICE,
   LOCAL_STORAGE_KEY_DEPRECIATION,
@@ -33,6 +34,7 @@ import NetDiscountedCashFlow from "./components/pages/netDiscountedCashFlow/netD
 import { netDiscountedCashFlowSlice } from "./store/reducers/netDiscountedCashFlowSlice";
 import InternalRateOfReturn from "./components/pages/internalRateOfReturnPage/internalRateOfReturn";
 import { internalRateOfReturnSlice } from "./store/reducers/internalRateOfReturnSlice";
+import LifeCyclePage from "./components/pages/lifeCyclePage/lifeCyclePage";
 
 function App() {
   const dispatch = useAppDispatch();
@@ -124,6 +126,7 @@ function App() {
             path={INTERNAL_RATE_OF_RETURN_PAGE_ROUTE}
             element={InternalRateOfReturn()}
           />
+          <Route path={LIFE_CYCLE_PAGE_ROUTE} element={LifeCyclePage()} />
         </Routes>
       </div>
     </div>
