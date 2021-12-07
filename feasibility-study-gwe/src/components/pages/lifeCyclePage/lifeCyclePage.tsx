@@ -67,9 +67,9 @@ const LifeCyclePage = () => {
         0,
         25,
         0,
-        netDiscountedCashFlowByDiscountRate[index - 1].year,
+        netDiscountedCashFlowByDiscountRate[index - 1].year + 1,
         netDiscountedCashFlowByDiscountRate[index - 1].netDiscountedCashIncome,
-        netDiscountedCashFlowByDiscountRate[index].year,
+        netDiscountedCashFlowByDiscountRate[index].year + 1,
         netDiscountedCashFlowByDiscountRate[index].netDiscountedCashIncome
       );
       const profitabilityIndex = +(
