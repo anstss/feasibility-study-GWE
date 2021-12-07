@@ -9,6 +9,7 @@ import {
   LIFE_CYCLE_PAGE_ROUTE,
   MIN_COST_EFFECTIVE_POWER_PAGE_ROUTE,
   NET_DISCOUNTED_CASH_FLOW_PAGE_ROUTE,
+  PROFITABILITY_RATIO_PAGE_ROUTE,
   STATIC_PERFORMANCE_INDICATORS_PAGE_ROUTE,
 } from "../../shared/constants";
 
@@ -115,6 +116,14 @@ const Navbar = () => {
                 <Link to={LIFE_CYCLE_PAGE_ROUTE} className="nav-link">
                   <div data-bs-dismiss="offcanvas">
                     Життєвий цикл прогнозної експлуатації
+                  </div>
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link to={PROFITABILITY_RATIO_PAGE_ROUTE} className="nav-link">
+                  <div data-bs-dismiss="offcanvas">
+                    Коефіцієнт рентабельності. Очікувані техніко-економічні
+                    показники експлуатації
                   </div>
                 </Link>
               </li>

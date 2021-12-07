@@ -8,6 +8,7 @@ import minCostEffectivePowerSliceReducer from "./reducers/minCostEffectivePower"
 import netDiscountedCashFlowReducer from "./reducers/netDiscountedCashFlowSlice";
 import internalRateOfReturnReducer from "./reducers/internalRateOfReturnSlice";
 import lifeCycleSliceReducer from "./reducers/lifeCycleSlice";
+import profitabilityRatioReducer from "./reducers/profitabilityRatioSlice";
 
 const rootReducer = combineReducers({
   analysisWaterProductionVolumesReducer,
@@ -18,8 +19,8 @@ const rootReducer = combineReducers({
   netDiscountedCashFlowReducer,
   internalRateOfReturnReducer,
   lifeCycleSliceReducer,
+  profitabilityRatioReducer,
 });
-
 export const setupStore = () => {
   return configureStore({
     reducer: rootReducer,

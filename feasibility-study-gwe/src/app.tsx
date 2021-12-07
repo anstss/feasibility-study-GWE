@@ -15,9 +15,11 @@ import {
   LOCAL_STORAGE_KEY_LIFE_CYCLE,
   LOCAL_STORAGE_KEY_MIN_COST_EFFECTIVE_POWER,
   LOCAL_STORAGE_KEY_NET_DISCOUNTED_CASH_FLOW,
+  LOCAL_STORAGE_KEY_PROFITABILITY_RATIO,
   LOCAL_STORAGE_KEY_STATIC_PERFORMANCE_INDICATORS,
   MIN_COST_EFFECTIVE_POWER_PAGE_ROUTE,
   NET_DISCOUNTED_CASH_FLOW_PAGE_ROUTE,
+  PROFITABILITY_RATIO_PAGE_ROUTE,
   STATIC_PERFORMANCE_INDICATORS_PAGE_ROUTE,
 } from "./shared/constants";
 import { useAppDispatch } from "./hooks/redux-hooks";
@@ -37,6 +39,8 @@ import InternalRateOfReturn from "./components/pages/internalRateOfReturnPage/in
 import { internalRateOfReturnSlice } from "./store/reducers/internalRateOfReturnSlice";
 import LifeCyclePage from "./components/pages/lifeCyclePage/lifeCyclePage";
 import { lifeCycleSlice } from "./store/reducers/lifeCycleSlice";
+import ProfitabilityRatioPage from "./components/pages/profitabilityRatioPage/profitabilityRatioPage";
+import { profitabilityRatioSlice } from "./store/reducers/profitabilityRatioSlice";
 
 function App() {
   const dispatch = useAppDispatch();
@@ -51,6 +55,7 @@ function App() {
   const { setNetDiscountedCashFlowData } = netDiscountedCashFlowSlice.actions;
   const { setInternalRateOfReturnData } = internalRateOfReturnSlice.actions;
   const { setLifeCycleData } = lifeCycleSlice.actions;
+  const { setProfitabilityRatioData } = profitabilityRatioSlice.actions;
 
   useEffect(() => {
     const analysisData = localStorage.getItem(LOCAL_STORAGE_KEY_ANALYSIS);
@@ -107,6 +112,12 @@ function App() {
     if (lifeCycleData) {
       dispatch(setLifeCycleData(JSON.parse(lifeCycleData)));
     }
+    const profitabilityRatioData = localStorage.getItem(
+      LOCAL_STORAGE_KEY_PROFITABILITY_RATIO
+    );
+    if (profitabilityRatioData) {
+      dispatch(setProfitabilityRatioData(JSON.parse(profitabilityRatioData)));
+    }
   }, []);
 
   return (
@@ -134,6 +145,10 @@ function App() {
             element={InternalRateOfReturn()}
           />
           <Route path={LIFE_CYCLE_PAGE_ROUTE} element={LifeCyclePage()} />
+          <Route
+            path={PROFITABILITY_RATIO_PAGE_ROUTE}
+            element={ProfitabilityRatioPage()}
+          />
         </Routes>
       </div>
     </div>
