@@ -12,6 +12,7 @@ import {
   LOCAL_STORAGE_KEY_COST_PRICE,
   LOCAL_STORAGE_KEY_DEPRECIATION,
   LOCAL_STORAGE_KEY_INTERNAL_RATE_OF_RETURN,
+  LOCAL_STORAGE_KEY_LIFE_CYCLE,
   LOCAL_STORAGE_KEY_MIN_COST_EFFECTIVE_POWER,
   LOCAL_STORAGE_KEY_NET_DISCOUNTED_CASH_FLOW,
   LOCAL_STORAGE_KEY_STATIC_PERFORMANCE_INDICATORS,
@@ -35,6 +36,7 @@ import { netDiscountedCashFlowSlice } from "./store/reducers/netDiscountedCashFl
 import InternalRateOfReturn from "./components/pages/internalRateOfReturnPage/internalRateOfReturn";
 import { internalRateOfReturnSlice } from "./store/reducers/internalRateOfReturnSlice";
 import LifeCyclePage from "./components/pages/lifeCyclePage/lifeCyclePage";
+import { lifeCycleSlice } from "./store/reducers/lifeCycleSlice";
 
 function App() {
   const dispatch = useAppDispatch();
@@ -48,6 +50,7 @@ function App() {
   const { setMinCostEffectivePowerData } = minCostEffectivePowerSlice.actions;
   const { setNetDiscountedCashFlowData } = netDiscountedCashFlowSlice.actions;
   const { setInternalRateOfReturnData } = internalRateOfReturnSlice.actions;
+  const { setLifeCycleData } = lifeCycleSlice.actions;
 
   useEffect(() => {
     const analysisData = localStorage.getItem(LOCAL_STORAGE_KEY_ANALYSIS);
@@ -99,6 +102,10 @@ function App() {
       dispatch(
         setInternalRateOfReturnData(JSON.parse(internalRateOfReturnData))
       );
+    }
+    const lifeCycleData = localStorage.getItem(LOCAL_STORAGE_KEY_LIFE_CYCLE);
+    if (lifeCycleData) {
+      dispatch(setLifeCycleData(JSON.parse(lifeCycleData)));
     }
   }, []);
 

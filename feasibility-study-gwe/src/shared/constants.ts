@@ -9,6 +9,7 @@ export const LOCAL_STORAGE_KEY_NET_DISCOUNTED_CASH_FLOW =
   "netDiscountedCashFlowGWE";
 export const LOCAL_STORAGE_KEY_INTERNAL_RATE_OF_RETURN =
   "internalRateOfReturnGWE";
+export const LOCAL_STORAGE_KEY_LIFE_CYCLE = "lifecycleGWE";
 
 export const ANALYSIS_PAGE_ROUTE = "/analysis";
 export const DEPRECIATION_PAGE_ROUTE = "/depreciation";
