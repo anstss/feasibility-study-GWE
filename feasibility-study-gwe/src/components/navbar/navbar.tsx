@@ -49,8 +49,8 @@ const Navbar = () => {
           <div className="offcanvas-body">
             <ul className="navbar-nav justify-content-end flex-grow-1 pe-3">
               <li className="nav-item">
-                <Link to={"/"} className="nav-link active" aria-current="page">
-                  <div data-bs-toggle="offcanvas">Home</div>
+                <Link to={"/"} className="nav-link" aria-current="page">
+                  <div data-bs-toggle="offcanvas">Головна</div>
                 </Link>
               </li>
               <li className="nav-item">

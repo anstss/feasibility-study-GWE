@@ -41,6 +41,7 @@ import LifeCyclePage from "./components/pages/lifeCyclePage/lifeCyclePage";
 import { lifeCycleSlice } from "./store/reducers/lifeCycleSlice";
 import ProfitabilityRatioPage from "./components/pages/profitabilityRatioPage/profitabilityRatioPage";
 import { profitabilityRatioSlice } from "./store/reducers/profitabilityRatioSlice";
+import MainPage from "./components/pages/mainPage";
 
 function App() {
   const dispatch = useAppDispatch();
@@ -125,6 +126,7 @@ function App() {
       <Navbar />
       <div className="container">
         <Routes>
+          <Route path={"/"} element={MainPage()} />
           <Route path={ANALYSIS_PAGE_ROUTE} element={AnalysisPage()} />
           <Route path={DEPRECIATION_PAGE_ROUTE} element={DepreciationPage()} />
           <Route path={COST_PRICE_PAGE_ROUTE} element={CostPricePage()} />
