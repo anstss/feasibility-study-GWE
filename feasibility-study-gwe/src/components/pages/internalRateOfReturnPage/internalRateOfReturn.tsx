@@ -128,6 +128,14 @@ const InternalRateOfReturn = () => {
         );
         saveInternalRateOfReturnToLocalStorage();
       }
+    } else {
+      dispatch(
+        setInternalRateOfReturnData({
+          internalRateOfReturnAnalyticalMethod: 0,
+          internalRateOfReturnGraphicalMethod: 0,
+        })
+      );
+      saveInternalRateOfReturnToLocalStorage();
     }
     setDataChart(data);
   }, [
@@ -158,7 +166,11 @@ const InternalRateOfReturn = () => {
           ВНП розрахована аналітичним методом:{" "}
           {internalRateOfReturnAnalyticalMethod}%.
         </div>
-      ) : null}
+      ) : (
+        <div className="input-group-prepend input-text mb-2">
+          Умови не виконуються, ВНП не розраховується.
+        </div>
+      )}
       {internalRateOfReturnGraphicalMethod ? (
         <React.Fragment>
           <h4 className="card-title text-center my-3">
