@@ -24,3 +24,19 @@ export const NET_DISCOUNTED_CASH_FLOW_PAGE_ROUTE = "/net-discounted-cash-flow";
 export const INTERNAL_RATE_OF_RETURN_PAGE_ROUTE = "/internal-rate-of-return";
 export const LIFE_CYCLE_PAGE_ROUTE = "/life-cycle";
 export const PROFITABILITY_RATIO_PAGE_ROUTE = "/profitability-ratio";
+
+export const ANALYSIS_PAGE_TITLE = "Аналіз досягнутих обсягів видобутку води";
+export const DEPRECIATION_PAGE_TITLE =
+  "Капіталовкладення та амортизаційні витрати";
+export const COST_PRICE_PAGE_TITLE = "Собівартість продукції";
+export const STATIC_PERFORMANCE_INDICATORS_PAGE_TITLE =
+  "Статичні показники експлуатації";
+export const MIN_COST_EFFECTIVE_POWER_PAGE_TITLE =
+  "Мінімальна рентабельна потужність";
+export const NET_DISCOUNTED_CASH_FLOW_PAGE_TITLE =
+  "Чистий дисконтований грошовий потік";
+export const INTERNAL_RATE_OF_RETURN_PAGE_TITLE =
+  "Внутрішня норма прибутковості";
+export const LIFE_CYCLE_PAGE_TITLE = "Життєвий цикл прогнозної експлуатації";
+export const PROFITABILITY_RATIO_PAGE_TITLE =
+  "Коефіцієнт рентабельності. Очікувані техніко-економічні показники експлуатації";

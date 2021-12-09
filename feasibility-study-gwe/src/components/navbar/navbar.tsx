@@ -3,14 +3,23 @@ import "./navbar.scss";
 import { Link } from "react-router-dom";
 import {
   ANALYSIS_PAGE_ROUTE,
+  ANALYSIS_PAGE_TITLE,
   COST_PRICE_PAGE_ROUTE,
+  COST_PRICE_PAGE_TITLE,
   DEPRECIATION_PAGE_ROUTE,
+  DEPRECIATION_PAGE_TITLE,
   INTERNAL_RATE_OF_RETURN_PAGE_ROUTE,
+  INTERNAL_RATE_OF_RETURN_PAGE_TITLE,
   LIFE_CYCLE_PAGE_ROUTE,
+  LIFE_CYCLE_PAGE_TITLE,
   MIN_COST_EFFECTIVE_POWER_PAGE_ROUTE,
+  MIN_COST_EFFECTIVE_POWER_PAGE_TITLE,
   NET_DISCOUNTED_CASH_FLOW_PAGE_ROUTE,
+  NET_DISCOUNTED_CASH_FLOW_PAGE_TITLE,
   PROFITABILITY_RATIO_PAGE_ROUTE,
+  PROFITABILITY_RATIO_PAGE_TITLE,
   STATIC_PERFORMANCE_INDICATORS_PAGE_ROUTE,
+  STATIC_PERFORMANCE_INDICATORS_PAGE_TITLE,
 } from "../../shared/constants";
 
 const Navbar = () => {
@@ -55,21 +64,19 @@ const Navbar = () => {
               </li>
               <li className="nav-item">
                 <Link to={ANALYSIS_PAGE_ROUTE} className="nav-link">
-                  <div data-bs-dismiss="offcanvas">
-                    Аналіз досягнутих обсягів видобутку води
-                  </div>
+                  <div data-bs-dismiss="offcanvas">{ANALYSIS_PAGE_TITLE}</div>
                 </Link>
               </li>
               <li className="nav-item">
                 <Link to={DEPRECIATION_PAGE_ROUTE} className="nav-link">
                   <div data-bs-dismiss="offcanvas">
-                    Капіталовкладення та амортизаційні витрати
+                    {DEPRECIATION_PAGE_TITLE}
                   </div>
                 </Link>
               </li>
               <li className="nav-item">
                 <Link to={COST_PRICE_PAGE_ROUTE} className="nav-link">
-                  <div data-bs-dismiss="offcanvas">Собівартість продукції</div>
+                  <div data-bs-dismiss="offcanvas">{COST_PRICE_PAGE_TITLE}</div>
                 </Link>
               </li>
               <li className="nav-item">
@@ -78,7 +85,7 @@ const Navbar = () => {
                   className="nav-link"
                 >
                   <div data-bs-dismiss="offcanvas">
-                    Статичні показники експлуатації
+                    {STATIC_PERFORMANCE_INDICATORS_PAGE_TITLE}
                   </div>
                 </Link>
               </li>
@@ -88,7 +95,7 @@ const Navbar = () => {
                   className="nav-link"
                 >
                   <div data-bs-dismiss="offcanvas">
-                    Мінімальна рентабельна потужність
+                    {MIN_COST_EFFECTIVE_POWER_PAGE_TITLE}
                   </div>
                 </Link>
               </li>
@@ -98,7 +105,7 @@ const Navbar = () => {
                   className="nav-link"
                 >
                   <div data-bs-dismiss="offcanvas">
-                    Чистий дисконтований грошовий потік
+                    {NET_DISCOUNTED_CASH_FLOW_PAGE_TITLE}
                   </div>
                 </Link>
               </li>
@@ -108,22 +115,19 @@ const Navbar = () => {
                   className="nav-link"
                 >
                   <div data-bs-dismiss="offcanvas">
-                    Внутрішня норма прибутковості
+                    {INTERNAL_RATE_OF_RETURN_PAGE_TITLE}
                   </div>
                 </Link>
               </li>
               <li className="nav-item">
                 <Link to={LIFE_CYCLE_PAGE_ROUTE} className="nav-link">
-                  <div data-bs-dismiss="offcanvas">
-                    Життєвий цикл прогнозної експлуатації
-                  </div>
+                  <div data-bs-dismiss="offcanvas">{LIFE_CYCLE_PAGE_TITLE}</div>
                 </Link>
               </li>
               <li className="nav-item">
                 <Link to={PROFITABILITY_RATIO_PAGE_ROUTE} className="nav-link">
                   <div data-bs-dismiss="offcanvas">
-                    Коефіцієнт рентабельності. Очікувані техніко-економічні
-                    показники експлуатації
+                    {PROFITABILITY_RATIO_PAGE_TITLE}
                   </div>
                 </Link>
               </li>

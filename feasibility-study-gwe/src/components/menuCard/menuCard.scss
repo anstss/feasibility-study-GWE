@@ -1,0 +1,21 @@
+@import "src/shared/variables";
+
+.menu-card {
+  min-width: 250px;
+  width: 22%;
+  transition: all 0.2s linear;
+
+  &__icon {
+    font-size: 5rem;
+    color: $primary-color;
+  }
+
+  &__link {
+    color: #000;
+    opacity: 0.66;
+  }
+
+  &:hover {
+    box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+  }
+}
